@@ -44,6 +44,7 @@ Encore
         to: 'fonts/[name].[hash:8].[ext]',
         pattern: /\.(woff|woff2|eot|ttf|otf|svg)$/
     })
+    .addStyleEntry('bootstrap_icons', './assets/styles/bootstrap_icons.scss')
 ;
 
 module.exports = Encore.getWebpackConfig();

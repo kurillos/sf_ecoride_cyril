@@ -7,8 +7,23 @@
             {{ encore_entry_link_tags('main_styles') }}
         {% endblock %}
         {# ... #}
+        {% block title %} EcoRide {% endblock %}
     </head>
     <body>
-        {# ... #}
+
+        {% block body %}
+            <header>
+                {% include 'partials/navbar.html.twig' %}
+            </header>
+            
+            <main>
+        
+            </main>
+
+            {% include 'partials/footer.html.twig' %}
+
+        {% endblock %}
+
+        
     </body>
 </html>
