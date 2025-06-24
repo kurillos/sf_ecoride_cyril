@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - EcoRide{% endblock %}
+
+{% block body %}
+    <main>
+        <section class="text-center py-5 bg-light">
+            <div class="container">
+                <h1 class="display-4 fw-bold text-primary">EcoRide : Covoiturer pour un monde plus propre.</h1>
+            </div>
+        </section>
+
+        <section class="text-center text-white d-flex align-items-center justify-content-center">
+            <div class="container">
+                <div class="search-box mx-auto mt-5">
+                    <form action="#">
+                        <div class="row g-3">
+                            <div class="col-md-5 input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                                <input type="text" class="form-control" id="departure" placeholder="Ville de départ" required>
+                            </div>
+                            <div class="col-md-5 input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+                                <input type="text" class="form-control" id="destination" placeholder="Ville d'arrivée" required>
+                            </div>
+                            <div class="col-md-5 input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-calendar-date"></i></span>
+                                <input type="text" class="form-control" id="date" placeholder="Date de départ" required>
+                            </div>
+                            <div class="col-md-5 input-group mb-3">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="passengers" placeholder="1 passager" required>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-success w-100 text-white">Rechercher</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}
