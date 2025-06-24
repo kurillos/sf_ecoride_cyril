@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white py-3 navbar-custom">
+    <div class="container">
+        
+        <a class="navbar-brand" href="{{ path('app_home') }}">
+            <img src="{{ asset('build/images/logo-ecoride.png') }}" alt="Ecoride Logo" height="30" class="d-inline-block align-text-top me-2"> {# Assure-toi d'avoir un logo #}
+            Ecoride
+        </a>
+        
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_services') }}">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_about') }}">À Propos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_contact') }}">Contact</a>
+                </li>
+            </ul>
+
+            
+            <div class="d-flex">
+                <a href="{{ path('app_login') }}" class="btn btn-login me-2">S'identifier</a>
+                <a href="{{ path('app_register') }}" class="btn btn-primary">S'inscrire</a>
+            </div>
+        </div>
+    </div>
+</nav>
