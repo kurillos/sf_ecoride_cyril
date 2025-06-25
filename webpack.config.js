@@ -39,6 +39,10 @@ Encore
     })
 
     .addStyleEntry('main_styles', './assets/scss/custom_bootstrap.scss')
+    .copyFiles({
+    from: './assets/images',
+    to: 'images/[path][name].[ext]',
+})
 ;
 
 module.exports = Encore.getWebpackConfig();
