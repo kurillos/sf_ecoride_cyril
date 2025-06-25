@@ -39,11 +39,6 @@ Encore
     })
 
     .addStyleEntry('main_styles', './assets/scss/custom_bootstrap.scss')
-    .copyFiles({
-        from: './node_modules/bootstrap-icons/font/fonts/',
-        to: 'fonts/[name].[hash:8].[ext]',
-        pattern: /\.(woff|woff2|eot|ttf|otf|svg)$/
-    })
 ;
 
 module.exports = Encore.getWebpackConfig();
