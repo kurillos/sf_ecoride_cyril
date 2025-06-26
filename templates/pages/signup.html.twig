@@ -10,75 +10,73 @@
                 <div class="card-body p-4">
                     <h1 class="card-title text-center mb-4 text-success">Inscription</h1>
 
-                    {{ form_start(userForm, {'attr': {'novalidate': 'novalidate'}}) }}
+                    {{ form_start(userForm, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
 
-                        {# Champ Prénom #}
+                       
                         <div class="mb-3">
                             {{ form_label(userForm.firstName, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(userForm.firstName, {'attr': {'class': 'form-control' ~ (userForm.firstName.vars.valid ? '' : ' is-invalid')}}) }}
-                            <div class="invalid-feedback">
+                            {{ form_widget(userForm.firstName, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackFirstName">
                                 {{ form_errors(userForm.firstName) }}
                             </div>
                         </div>
 
-                        {# Champ Nom #}
+                        
                         <div class="mb-3">
                             {{ form_label(userForm.lastName, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(userForm.lastName, {'attr': {'class': 'form-control' ~ (userForm.lastName.vars.valid ? '' : ' is-invalid')}}) }}
-                            <div class="invalid-feedback">
+                            {{ form_widget(userForm.lastName, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackLastName">
                                 {{ form_errors(userForm.lastName) }}
                             </div>
                         </div>
 
-                        {# Champ Pseudonyme #}
+                       
                         <div class="mb-3">
                             {{ form_label(userForm.pseudo, 'Pseudonyme', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(userForm.pseudo, {'attr': {'class': 'form-control' ~ (userForm.pseudo.vars.valid ? '' : ' is-invalid')}}) }}
-                            <div class="invalid-feedback">
+                            {{ form_widget(userForm.pseudo, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackPseudo">
                                 {{ form_errors(userForm.pseudo) }}
                             </div>
                         </div>
 
-                        {# Champ Email #}
+                  
                         <div class="mb-3">
                             {{ form_label(userForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(userForm.email, {'attr': {'class': 'form-control' ~ (userForm.email.vars.valid ? '' : ' is-invalid')}}) }}
-                            <div class="invalid-feedback">
+                            {{ form_widget(userForm.email, {'attr': {'class': 'form-control','required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackEmail">
                                 {{ form_errors(userForm.email) }}
                             </div>
                         </div>
 
-                        {# Champ Mot de passe (RepeatedType) #}
                         <div class="mb-3">
                             {{ form_label(userForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(userForm.plainPassword.first, {'attr': {'class': 'form-control' ~ (userForm.plainPassword.first.vars.valid ? '' : ' is-invalid')}}) }}
-                            <div class="invalid-feedback">
+                            {{ form_widget(userForm.plainPassword.first, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feebdackPassword">
                                 {{ form_errors(userForm.plainPassword.first) }}
                             </div>
                         </div>
                         <div class="mb-3">
                             {{ form_label(userForm.plainPassword.second, 'Confirmation de mot de passe', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(userForm.plainPassword.second, {'attr': {'class': 'form-control' ~ (userForm.plainPassword.second.vars.valid ? '' : ' is-invalid')}}) }}
-                            <div class="invalid-feedback">
+                            {{ form_widget(userForm.plainPassword.second, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackPasswordConfirm">
                                 {{ form_errors(userForm.plainPassword.second) }}
-                                {# Ce bloc est pour les erreurs de RepeatedType (mots de passe non identiques) #}
                                 {{ form_errors(userForm.plainPassword) }}
                             </div>
                         </div>
 
-                        {# Champ Conditions d'utilisation (CheckboxType) #}
+                        
                         <div class="mb-3 form-check">
-                            {{ form_widget(userForm.agreeTerms, {'attr': {'class': 'form-check-input' ~ (userForm.agreeTerms.vars.valid ? '' : ' is-invalid')}}) }}
+                            {{ form_widget(userForm.agreeTerms, {'attr': {'class': 'form-check-input', 'required': 'required'}}) }}
                             {{ form_label(userForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {'label_attr': {'class': 'form-check-label'}}) }}
-                            <div class="invalid-feedback">
+                            <div class="invalid-feedback" id="feedbackCheckBox">
                                 {{ form_errors(userForm.agreeTerms) }}
                             </div>
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg">S'inscrire</button>
+                            <button type="submit" class="btn btn-success btn-lg" id="btn-validation-inscription">S'inscrire</button>
                         </div>
-                    {{ form_end(userForm) }} {# Fin du formulaire #}
+                    {{ form_end(userForm) }}
                 </div>
             </div>
         </div>
