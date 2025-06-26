@@ -23,7 +23,7 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
-                'attr' => ['placeholder' => 'Votre prénom'],
+                'attr' => ['placeholder' => 'Votre prénom',  'class' => 'form-control'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez entrer votre prénom.',
@@ -38,7 +38,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
-                'attr' => ['placeholder' => 'Votre nom'],
+                'attr' => ['placeholder' => 'Votre nom', 'class' => 'form-control'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez entrer votre nom.',
@@ -53,7 +53,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('pseudo', TextType::class, [
                 'label' => 'Pseudonyme',
-                'attr' => ['placeholder' => 'Votre pseudonyme'],
+                'attr' => ['placeholder' => 'Votre pseudonyme', 'class' => 'form-control'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez choisir un pseudonyme.',
@@ -69,37 +69,52 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
-                'attr' => ['placeholder' => 'Votre adresse email'],
+                'attr' => ['placeholder' => 'Votre adresse email', 'class' => 'form-control'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez entrer une adresse email.',
                     ]),
                 ],
             ])
-            ->add('plainPassword', RepeatedType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
-                'mapped' => false, // Ne pas mapper directement à l'entité car on va hacher le mot de passe
-                'attr' => ['autocomplete' => 'new-password', 'placeholder' => 'Votre mot de passe'],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez entrer un mot de passe.',
-                    ]),
-                    new Length([
-                        'min' => 8,
-                        'minMessage' => 'Votre mot de passe doit contenir au moins {{ limit }} caractères.',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
-                    // Regex pour le mot de passe côté serveur
-                    new Regex([
-                        'pattern' => '/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).{8,}$/',
-                        'message' => 'Votre mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.',
-                    ]),
+        ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'mapped' => false,
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'attr' => [
+                        'autocomplete' => 'new-password',
+                        'placeholder' => 'Votre mot de passe',
+                        'class' => 'form-control'
+                    ],
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Veuillez entrer un mot de passe.',
+                        ]),
+                        new Length([
+                            'min' => 8,
+                            'minMessage' => 'Votre mot de passe doit contenir au moins {{ limit }} caractères.',
+                            'max' => 4096,
+                        ]),
+                        new Regex([
+                            'pattern' => '/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).{8,}$/',
+                            'message' => 'Votre mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.',
+                        ]),
+                    ],
                 ],
+                'second_options' => [
+                    'label' => 'Confirmation de mot de passe',
+                    'attr' => [
+                        'autocomplete' => 'new-password',
+                        'placeholder' => 'Confirmez votre mot de passe',
+                        'class' => 'form-control'
+                    ],
+                ],
+                'invalid_message' => 'Les mots de passe ne correspondent pas.',
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
+                'attr' => [
+                'class' => 'form-check-input'],
                 'constraints' => [
                     new IsTrue([
                         'message' => 'Vous devez accepter nos conditions.',
