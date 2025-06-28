@@ -7,13 +7,21 @@ const inputPasswordConfirm = document.getElementById("registration_form_plainPas
 const inputAgreeTerms = document.getElementById("registration_form_agreeTerms");
 
 // récupération des div de feedback
-const feedbackNom = document.getElementById("feedbackName");
+const feedbackNom = document.getElementById("feedbackFirstName");
 const feedbackPrenom = document.getElementById("feedbackLastName");
 const feedbackPseudo = document.getElementById("feedbackPseudo");
 const feedbackEmail = document.getElementById("feedbackEmail");
 const feedbackPassword = document.getElementById("feedbackPassword");
 const feedbackPasswordConfirm = document.getElementById("feedbackPasswordConfirm");
 const feedbackAgreeTerms = document.getElementById("feedbackCheckBox");
+
+ const feedbackNomSpan = document.getElementById("firstNameErrorMessage");
+ const feedbackPrenomSpan = document.getElementById("lastNameErrorMessage");
+ const feedbackPseudoSpan = document.getElementById("pseudoErrorMessage");
+ const feedbackEmailSpan = document.getElementById("emailErrorMessage");
+ const feedbackPasswordSpan = document.getElementById("passwordErrorMessage");
+ const feedbackPasswordConfirmSpan = document.getElementById("passwordConfirmErrorMessage");
+ const feedbackAgreeTermsSpan = document.getElementById("agreeTermsErrorMessage");
 
 // bouton de validation
 const btnValidation = document.getElementById("btn-validation-inscription");
@@ -40,13 +48,13 @@ if (form) {
 }
 
 function validateForm() {
-    const nomOK = validateRequired(inputNom, feedbackNom, "Veuillez entrer votre nom.");
-    const prenomOK = validateRequired(inputPrenom, feedbackPrenom, "Veuillez entrer votre prénom.");
-    const pseudoOK = validateRequired(inputPseudo, feedbackPseudo, "Veuillez entrer votre pseudonyme.");
-    const emailOK = validateEmail(inputEmail, feedbackEmail, "Veuillez entrer une adresse e-mail valide.");
-    const passwordOK = validatePassword(inputPassword, feedbackPassword);
-    const passwordConfirmOK = validatePasswordConfirm(inputPassword, inputPasswordConfirm);
-    const agreeTermsOK = validateCheckbox(inputAgreeTerms, feedbackAgreeTerms, "Vous devez accepter les conditions d'utilisation.");
+    const nomOK = validateRequired(inputNom, feedbackNomSpan, "Veuillez entrer votre nom.");
+    const prenomOK = validateRequired(inputPrenom, feedbackPrenomSpan, "Veuillez entrer votre prénom.");
+    const pseudoOK = validateRequired(inputPseudo, feedbackPseudoSpan, "Veuillez entrer votre pseudonyme.");
+    const emailOK = validateEmail(inputEmail, feedbackEmailSpan, "Veuillez entrer une adresse e-mail valide.");
+    const passwordOK = validatePassword(inputPassword, feedbackPasswordSpan);
+    const passwordConfirmOK = validateConfirmationPassword(inputPasswordSpan, inputPasswordConfirm, feedbackPasswordConfirm);
+    const agreeTermsOK = validateCheckbox(inputAgreeTerms, feedbackAgreeTermsSpan, "Vous devez accepter les conditions d'utilisation.");
 
     if (nomOK && prenomOK && pseudoOK && emailOK && passwordOK && passwordConfirmOK && agreeTermsOK) {
         btnValidation.disabled = false;
@@ -56,47 +64,47 @@ function validateForm() {
 }
 
 // affiche / masque le message d'erreur
-function displayFeedback(feedbackElement, message, isValid) {
+function displayFeedback(feedbackElementSpan, message, isValid) {
     if (isValid) {
-        feedbackElement.textContent ="";
+        feedbackElementSpan.textContent ="";
     } else { 
-        feedbackElement.textContent = message;
+        feedbackElementSpan.textContent = message;
     }
 }
 
 // Validation des champs requis
-function validateRequired(input, feedbackElement, errorMessage) {
+function validateRequired(input, feedbackElementSpan, errorMessage) {
     if (input.value.trim() !== "") {
         input.classList.add("is-valid");
         input.classList.remove("is-invalid");
-        displayFeedback(feedbackElement, "", true);
+        feedbackElementSpan.textContent = "";
         return true;
     } else {
         input.classList.add("is-invalid");
         input.classList.remove("is-valid");
-        displayFeedback(feedbackElement, errorMessage, false);
+        feedbackElementSpan.textContent = errorMessage;
         return false;
     }
 }
 
 // Validation de l'email
-function validateEmail(input, feedbackElement, errorMessage) {
+function validateEmail(input, feedbackElementSpan, errorMessage) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (input.value.trilm().match(emailRegex)) {
+    if (input.value.trim().match(emailRegex)) {
         input.classList.add("is-valid");
         input.classList.remove("is-invalid");
-        displayFeedback(feedbackElement, "", true);
+        feedbackElementSpan.textContent = "";
         return true;
     } else {
         input.classList.add("is-invalid");
         input.classList.remove("is-valid");
-        displayFeedback(feedbackElement, errorMessage, false);
+        feedbackElementSpan.textContent = errorMessage;
         return false;
     }
 }
 
 // Validation du mot de passe
-function validatePassword(input, feedbackElement) {
+function validatePassword(input, feedbackElementSpan) {
     // Regex pour 8+ caractère, 1 maj, 1 chiffre, 1 caractère spécial
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).{8,}$/;
     const passwordUser = input.value;
@@ -115,44 +123,46 @@ function validatePassword(input, feedbackElement) {
     if (passwordUser.match(passwordRegex)) {
         input.classList.add("is-valid");
         input.classList.remove("is-invalid");
-        displayFeedback(feedbackElement, message || "", true);
+        feedbackElementSpan.textContent = message ||"";
+        return true;
     } else {
         input.classList.add("is-invalid");
         input.classList.remove("is-valid");
-        displayFeedback(feedbackElement, message || "Le mot de passe ne respecte pas les critères de sécurité requis.", false);
+        feedbackElementSpan.textContent = message || "Le mot de passe ne respecte pas les critères de sécurité requis.";
         return false;
     }
 }
 
 // Validation de la confirmation du mot de passe
-function validateConfirmationPassword(inputPwd, inputConfirmPwd, feedbackElement) {
+function validateConfirmationPassword(inputPwd, inputConfirmPwd, feedbackElementSpan) {
     if (inputPwd.value === inputConfirmPwd.value && inputConfirmPwd.value.length > 0) {
         inputConfirmPwd.classList.add("is-valid");
-        inpuConfirmPwd.classList.remove("is-invalid");
-        displayFeedback(feedbackPasswordConfirm, "", true);
+        inputConfirmPwd.classList.remove("is-invalid");
+        feedbackElementSpan.textContent = "";
         return true;  
     } else {
         inputConfirmPwd.classList.add("is-invalid");
-        inputConfirmPwd.classList.add("is-valid");
-        displayFeedback(feedbackPasswordConfirm, "Les mots de passe ne correspondent pas.", false);
+        inputConfirmPwd.classList.remove("is-valid");
+        feedbackElementSpan.textContent = "Les mots de passe ne correspondent pas.";
         return false;
+}
 }
 
 // validation de la checkbox
-function validateCheckbox(input, feedbackElement, errorMessage) {
+function validateCheckbox(input, feedbackElementSpan, errorMessage) {
     if (input.checked) {
         input.classList.add("is-valid");
         input.classList.remove("is-invalid");
-        displayFeedback(feedbackElement, "", true);
+        feedbackElementSpan.textContent = "";
         return true;
     } else {
         input.classList.add("is-invalid");
         input.classList.remove("is-valid");
-        displayFeedback(feedbackElement, errorMessage, false);
+        feedbackElementSpan.textContent = errorMessage;
         return false;
     }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
     validateForm();
-})};
+});
