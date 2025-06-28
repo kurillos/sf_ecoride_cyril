@@ -44,6 +44,7 @@ Encore
     to: 'images/[path][name].[ext]',
 })
 .addEntry('form_validation', './assets/js/form_validation.js')
+.addEntry('login_form', './assets/js/login_form_validation.js')
 ;
 
 module.exports = Encore.getWebpackConfig();
