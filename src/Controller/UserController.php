@@ -32,7 +32,8 @@ final class UserController extends AbstractController
         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
             $entityManager->persist($user);
             $entityManager->flush();
-            $this->addFlash('success', 'Votre profil a été mis à jour.')
+            $this->addFlash('success', 'Votre profil a été mis à jour.');
+            return $this->redirectToRoute('app_user_profile');
         }
 
         // Crée le formulaire pour la photo de profil
@@ -67,11 +68,16 @@ final class UserController extends AbstractController
             return $this->redirectToRoute('app_user_profile');
         }
 
+        // Récupére les véhicules de l'utilisateur
+        $userVehicles = $user->getVehicles();
+
         return $this->render('user/profile.html.twig', [
             'user' => $user,
             'profilePictureForm' => $profilePictureForm->createView(),
             'profileForm' => $profileForm->createView(),
             'preferencesForm' => $preferencesForm->createView(),
+            'vehicles' => $userVehicles,
+            // $addVehiclesForm->createView(), à rajouter pour l'ajout de véhicules.
         ]);
     }
 }

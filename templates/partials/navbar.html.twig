@@ -1,8 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 navbar-custom">
     <div class="container">
         
-        <a class="navbar-brand" href="{{ path('app_home') }}">
-            <img src="{{ asset('build/images/logo-ecoride.png') }}" alt="Ecoride Logo" height="30" class="d-inline-block align-text-top me-2"> {# Assure-toi d'avoir un logo #}
+        <a class="navbar-brand text-success" href="{{ path('app_home') }}">
             Ecoride
         </a>
         
@@ -18,21 +17,52 @@
                     <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_services') }}">Services</a>
+                    <a class="nav-link" href="#">Services</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_about') }}">À Propos</a>
+                    <a class="nav-link" href="#">À Propos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_contact') }}">Contact</a>
+                    <a class="nav-link" href="#">Contact</a>
                 </li>
+                {% if app.user %}
+                    {# Si l'utilisateur est CONNECTÉ #}
+                    <li class="nav-item">
+                        <span class="nav-link disabled text-muted">Bonjour, {{ app.user.pseudo }}</span>
+                    </li>
             </ul>
 
-            
-            <div class="d-flex">
-                <a href="{{ path('app_login') }}" class="btn btn-login me-2">S'identifier</a>
-                <a href="{{ path('app_register') }}" class="btn btn-primary">S'inscrire</a>
-            </div>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item d-flex align-items-center">
+                    {# Profil miniature #}
+                    {% if app.user.profilePictureFilename %}
+                        <img src="{{ vich_uploader_asset(app.user, 'profilePictureFile') }}" 
+                            alt="Photo de profil de {{ app.user.pseudo }}"
+                            class="rounded-circle me-2"
+                            style="width: 30px; height:30px; object-fit: cover;">
+                    {% else %}
+                        <img src="{{ asset('images/default-profile-picture.jpg') }}"
+                            alt="Photo de profil par défaut"
+                            class="rounded-circle me-2"
+                            style="width: 30px; height:30px; object-fit: cover;">
+                    {% endif %}
+                    <a class="nav-link" href="{{ path('app_user_profile') }}">
+                        Bienvenue, {{ app.user.pseudo }}                            
+                    </a>
+                </li>
+                <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                </li>
+                {% else %}
+                    {# Si l'utilisateur n'est PAS CONNECTÉ #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_signup') }}">Inscription</a>
+                    </li>
+                {% endif %}  
+            </ul>
         </div>
     </div>
 </nav>

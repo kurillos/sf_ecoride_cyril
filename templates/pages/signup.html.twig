@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('form_validation') }}
+{% endblock %}
+
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="card-title text-center mb-4 text-success">Inscription</h1>
+
+                    {{ form_start(userForm, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+
+                       
+                        <div class="mb-3">
+                            {{ form_label(userForm.firstName, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(userForm.firstName, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackFirstName">
+                                <span id="firstNameErrorMessage"></span>
+                                {{ form_errors(userForm.firstName) }}
+                            </div>
+                        </div>
+
+                        
+                        <div class="mb-3">
+                            {{ form_label(userForm.lastName, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(userForm.lastName, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackLastName">
+                                <span id="lastNameErrorMessage"></span>
+                                {{ form_errors(userForm.lastName) }}
+                            </div>
+                        </div>
+
+                       
+                        <div class="mb-3">
+                            {{ form_label(userForm.pseudo, 'Pseudonyme', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(userForm.pseudo, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackPseudo">
+                                <span id="pseudoErrorMessage"></span>
+                                {{ form_errors(userForm.pseudo) }}
+                            </div>
+                        </div>
+
+                  
+                        <div class="mb-3">
+                            {{ form_label(userForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(userForm.email, {'attr': {'class': 'form-control','required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackEmail">
+                                <span id="emailErrorMessage"></span>
+                                {{ form_errors(userForm.email) }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(userForm.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(userForm.plainPassword.first, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackPassword">
+                                <span id="passwordErrorMessage"></span>
+                                {{ form_errors(userForm.plainPassword.first) }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(userForm.plainPassword.second, 'Confirmation de mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(userForm.plainPassword.second, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                            <div class="invalid-feedback" id="feedbackPasswordConfirm">
+                                <span id="passwordConfirmErrorMessage"></span>
+                                {{ form_errors(userForm.plainPassword.second) }}
+                                {{ form_errors(userForm.plainPassword) }}
+                            </div>
+                        </div>
+
+                        
+                        <div class="mb-3 form-check">
+                            {{ form_widget(userForm.agreeTerms, {'attr': {'class': 'form-check-input', 'required': 'required'}}) }}
+                            {{ form_label(userForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {'label_attr': {'class': 'form-check-label'}}) }}
+                            <div class="invalid-feedback" id="feedbackCheckBox">
+                                <span id="checkBoxErrorMessage"></span>
+                                {{ form_errors(userForm.agreeTerms) }}
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg" id="btn-validation-inscription">S'inscrire</button>
+                        </div>
+                    {{ form_end(userForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

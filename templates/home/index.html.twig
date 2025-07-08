@@ -1,43 +1,111 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil - EcoRide{% endblock %}
-
 {% block body %}
     <main>
-        <section class="text-center py-5 bg-light">
+        <section class="text-center py-5">
             <div class="container">
                 <h1 class="display-4 fw-bold text-primary">EcoRide : Covoiturer pour un monde plus propre.</h1>
             </div>
         </section>
 
-        <section class="text-center text-white d-flex align-items-center justify-content-center">
+        <section class="text-center text-white d-flex align-items-center justify-content-center py-5">
             <div class="container">
                 <div class="search-box mx-auto mt-5">
                     <form action="#">
-                        <div class="row g-3">
-                            <div class="col-md-5 input-group mb-3">
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-md-3 col-sm-6 input-group mb-3">
                                 <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
                                 <input type="text" class="form-control" id="departure" placeholder="Ville de départ" required>
                             </div>
-                            <div class="col-md-5 input-group mb-3">
+                            <div class="col-md-3 col-sm-6 input-group mb-3">
                                 <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
                                 <input type="text" class="form-control" id="destination" placeholder="Ville d'arrivée" required>
                             </div>
-                            <div class="col-md-5 input-group mb-3">
+                            <div class="col-md-3 col-sm-6 input-group mb-3">
                                 <span class="input-group-text"><i class="bi bi-calendar-date"></i></span>
                                 <input type="text" class="form-control" id="date" placeholder="Date de départ" required>
                             </div>
-                            <div class="col-md-5 input-group mb-3">
+                            <div class="col-md-3 col-sm-6 input-group mb-3">
                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
                                 <input type="text" class="form-control" id="passengers" placeholder="1 passager" required>
                             </div>
-                            <div class="col-md-2 d-flex align-items-end">
-                                <button type="submit" class="btn btn-success w-100 text-white">Rechercher</button>
+                        </div>
+
+                        <div class="row mt-3 justify-content-center">
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-success text-white fw-bold">Rechercher</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </section>
+
+        <section class="text-center">
+                <p>Bienvenue chez EcoRide - la nuvelle plateforme française qui transforme vos trajets en actes écolos !</br>
+                Notre mission ? Réinventer le covoiturage en voiture pour réduire l'empreinte carbonne de nos déplacements, tout en vous faisant faire des économies.
+                </p>
+                <img class="rounded" src="{{ asset('build/images/covoiturage.png') }}" alt="covoiturage">
+                <p>Moins de voitures sur la route, moiins de pollution, plus de rencontres et de trajets partagés : c'est ça l'esprit EcoRide.</br>
+                Notre ambition est grande : devenir la référence du covoiturage écologique en France et au-delà, pour tous les voyageurs soucieux de leur impact et prêts à changer les hbaitudes.</br>
+                <strong>Ensemble, on va plus loin. Rejoignez l'aventure EcoRide dès aujourd'hui !</strong>
+                </p>
+                <img class="rounded" src="{{ asset('build/images/energie_propre.png') }}" alt="energie_propre">
+        </section>
+
+           <section class="py-5"> {# Section parente, sans classes flexbox pour laisser le container faire son travail #}
+    <div class="container">
+        {# La ligne qui contient les deux colonnes doit être un conteneur flex #}
+        {# Et utiliser align-items-start si tu veux qu'ils s'alignent en haut, ou align-items-center si tu veux qu'ils se centrent l'un par rapport à l'autre #}
+        <div class="row align-items-start"> {# J'ai mis align-items-start car les titres sont en haut dans image_035d1f.png #}
+            
+            {# BLOC "TRAJETS LES PLUS FRÉQUENTS" #}
+            <div class="col-md-6">
+                {# Le div "travel" est le conteneur flex-column principal pour son h2 et ses boutons #}
+                <div class="travel d-flex flex-column align-items-center">
+                    <h2 class="text-success">Trajets les plus fréquents</h2>
+                    {# Ce div contient les boutons. Il est aussi flex-column pour empiler les boutons. #}
+                    <div class="d-flex flex-column align-items-center"> 
+                        <button class="btn btn-success text-white mb-2"><a href="#" class="text-white text-decoration-none">Lyon -> Marseille</a></button>
+                        <button class="btn btn-success text-white mb-2"><a href="#" class="text-white text-decoration-none">Rouen -> Nantes</a></button>
+                        <button class="btn btn-success text-white mb-2"><a href="#" class="text-white text-decoration-none">Lille -> Bruxelle</a></button>
+                        <button class="btn btn-success text-white"><a href="#" class="text-white text-decoration-none">Bordeaux -> Pau</a></button>
+                    </div>
+                </div>
+            </div>
+            
+            {# BLOC "LES SERVICES À BORD" #}
+            <div class="col-md-6">
+                {# Le div "service" est le conteneur flex-column principal pour son h2 et son div de services #}
+                <div class="service d-flex flex-column align-items-center"> 
+                    <h2 class="text-success">Les services à bord</h2>
+                    
+                    {# Ce div contient tous les services individuels. Il doit être flex (row par défaut) pour les placer côte à côte/enrouler. #}
+                    {# Utilise justify-content-center pour centrer cet ensemble de services dans la largeur disponible. #}
+                    <div class="d-flex flex-column"> 
+                        
+                        {# Chaque service individuel (icône + texte) doit être un flex-row, aligné au centre verticalement #}
+                        <div class="d-flex align-items-center mx-2 mb-2"> 
+                            <i class="bi bi-usb-symbol text-success me-1"></i>
+                            <p class="mb-0">Prise USB</p>
+                        </div>
+                        <div class="d-flex align-items-center mx-2 mb-2">
+                            <i class="bi bi-wifi text-success me-1"></i>
+                            <p class="mb-0">Wi-fi</p>
+                        </div>
+                        <div class="d-flex align-items-center mx-2 mb-2">
+                            <i class="bi bi-music-note-list text-success me-1"></i>
+                            <p class="mb-0">Musique</p>
+                        </div>
+                        <div class="d-flex align-items-center mx-2 mb-2">
+                            <i class="bi bi-snow3 text-success me-1"></i>
+                            <p class="mb-0">Climatisation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> {# Fin de la row #}
+    </div>
+</section>
     </main>
 {% endblock %}
