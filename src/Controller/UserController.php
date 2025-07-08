@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Vehicle;
 use App\Form\UserProfileFormType;
 use App\Form\UserProfilePictureType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,18 +14,25 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Form\UserProfilePreferencesType;
+use App\Form\VehicleType;
 
 final class UserController extends AbstractController
 {
     #[Route('/profile', name: 'app_user_profile')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('ROLE_USER')]
     public function profile(Request $request, EntityManagerInterface $entityManager): Response
     {
         /** @var User $user */
         $user = $this->getUser();//Récupére l'utilisateur connecté
 
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
+        // Traitement du formulaire
+        $profileForm = $this->createForm(UserProfileFormType::class, $user);
+        $profileForm->handleRequest($request);
+
+        if ($profileForm->isSubmitted() && $profileForm->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', 'Votre profil a été mis à jour.')
         }
 
         // Crée le formulaire pour la photo de profil
