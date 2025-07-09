@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use App\Entity\Vehicle;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -89,9 +90,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(max: 500, maxMessage: 'Les informations supplémentaires ne peuvent pas dépasser {{ limit }} caractères.')]
     private ?string $additionalInfo = null;
 
+    
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Vehicle::class, orphanRemoval: true, cascade: ['persist'])]
+    private Collection $vehicles;
+
     public function __construct()
     {
         $this->userPreferences = new ArrayCollection();
+        $this->vehicles = new ArrayCollection();
         $this->updatedAt = new \DateTimeImmutable();
     }
 
@@ -284,6 +290,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->additionalInfo = $additionalInfo;
         return $this;
     }
+
 
      /**
      * Checks if the user has the ROLE_DRIVER role.

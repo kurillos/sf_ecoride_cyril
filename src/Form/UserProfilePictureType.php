@@ -18,7 +18,7 @@ class UserProfilePictureType extends AbstractType
         $builder
             ->add('profilePictureFile', fileType::class, [
                 'label' => 'Photo de profil',
-                'mapped' => false,
+                'mapped' => true,
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Choisissez une photo de profil'

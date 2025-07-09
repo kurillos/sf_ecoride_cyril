@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Security\Core\USer\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Form\UserProfilePreferencesType;
 
 final class UserController extends AbstractController
@@ -29,14 +29,14 @@ final class UserController extends AbstractController
 
         // Crée le formulaire pour la photo de profil
         $profilePictureForm = $this->createForm(UserProfilePictureType::class, $user);
-        //dd($_FILES);
         $profilePictureForm->handleRequest($request);
 
         if ($profilePictureForm->isSubmitted() && $profilePictureForm->isValid()) {
             // VichUpload gère automatiquement l'upload de la photo de profil
-            dd($user->getProfilePictureFile());
             $entityManager->persist($user);
             $entityManager->flush();
+
+            $user->setProfilePictureFile(null);
 
             $this->addFlash('success', 'Votre photo de profil a été mise à jour avec succès.');
 
