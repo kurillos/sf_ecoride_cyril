@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250624081556 extends AbstractMigration
+final class Version20250709123023 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,10 +21,7 @@ final class Version20250624081556 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            DROP INDEX UNIQ_8D93D64986CC499D ON user
-        SQL);
-        $this->addSql(<<<'SQL'
-            ALTER TABLE user DROP first_name, DROP last_name, DROP pseudo, DROP credits
+            ALTER TABLE vehicle ADD is_electric TINYINT(1) DEFAULT 0 NOT NULL
         SQL);
     }
 
@@ -32,10 +29,7 @@ final class Version20250624081556 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE `user` ADD first_name VARCHAR(255) NOT NULL, ADD last_name VARCHAR(255) NOT NULL, ADD pseudo VARCHAR(255) NOT NULL, ADD credits INT NOT NULL
-        SQL);
-        $this->addSql(<<<'SQL'
-            CREATE UNIQUE INDEX UNIQ_8D93D64986CC499D ON `user` (pseudo)
+            ALTER TABLE vehicle DROP is_electric
         SQL);
     }
 }

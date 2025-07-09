@@ -38,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-     #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private int $credits = 0;
 
     #[ORM\Column(length: 255)]
@@ -59,25 +59,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    /**
-     * #[Vich\UploadableField(mapping: 'profile_picture', fileNameProperty: 'profilePictureFilename')]
-     * @var File|null
-     */
     #[Vich\UploadableField(mapping: 'profile_picture', fileNameProperty: 'profilePictureFilename')]
     private ?File $profilePictureFile = null;
 
-    /**
-     * @ORM\Column(type: 'string', nullable: true)
-     * @var string|null
-     */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePictureFilename = null;
 
-    /**
-     * @var Collection<int, UserPreference>
-     */
     #[ORM\OneToMany(targetEntity: UserPreference::class, mappedBy: 'user', orphanRemoval: true, cascade: ['persist'])]
-    private collection $userPreferences;
+    private Collection $userPreferences;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isSmoker = false; 
@@ -89,8 +78,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(max: 500, maxMessage: 'Les informations supplémentaires ne peuvent pas dépasser {{ limit }} caractères.')]
     private ?string $additionalInfo = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Vehicle::class, orphanRemoval: true, cascade: ['persist'])]
+    private Collection $vehicles;
+
     public function __construct()
     {
+        $this->vehicles = new ArrayCollection();
         $this->userPreferences = new ArrayCollection();
         $this->updatedAt = new \DateTimeImmutable();
     }
