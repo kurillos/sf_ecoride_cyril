@@ -29,7 +29,7 @@ class VehicleType extends AbstractType
                 'attr' => ['placeholder' => 'Noir'],
             ])
             ->add('licensePlate', TextType::class, [
-                'labem' => 'Plaque immatriculation',
+                'label' => 'Plaque immatriculation',
                 'attr' => ['placeholder' => 'AB-123-CD'],
             ])
             ->add('seats', IntegerType::class, [

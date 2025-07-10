@@ -7,4 +7,3 @@ import './bootstrap.js';
  */
 import './styles/app.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
-import './js/profil.js';

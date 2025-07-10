@@ -1,10 +1,7 @@
-@use "../../node_modules/bootstrap/scss/functions";
-@use "../../node_modules/bootstrap/scss/variables";
-@use "../../node_modules/bootstrap/scss/mixins";
-
-// 2. Import des polices Google Fonts
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/maps";
+@import "../../node_modules/bootstrap/scss/mixins"; 
 
 // 3. Définis/Surcharge variables personnalisées de Bootstrap ici.
 
@@ -34,14 +31,11 @@ $font-family-sans-serif: 'lato', sans-serif;
 $font-family-base: 'Lato', sans-serif;
 $headings-font-family: 'Inter', sans-serif;
 
-
-// 4. Importe LE FICHIER PRINCIPAL de Bootstrap.
 @import "../../node_modules/bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 
-
-// 5. Importe Bootstrap Icons.
-@import "../../node_modules/bootstrap-icons/font/bootstrap-icons.css";
-
+// Import des polices Google Fonts (peut aussi être fait dans ton HTML)
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 // 6. Tes styles CSS personnalisés.
 body {
@@ -122,4 +116,13 @@ img {
 
 .ecoride-footer a:hover {
     text-decoration: underline;
+}
+
+.invalid-feedback {
+    display: none; 
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-check-input:invalid ~ .invalid-feedback {
+    display: block;
 }
