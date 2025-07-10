@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use App\Entity\Vehicle;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -94,6 +95,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Vehicle::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $vehicles;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isDriver = false;
+
     public function __construct()
     {
         $this->userPreferences = new ArrayCollection();
@@ -119,8 +123,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
      * @see UserInterface
      */
     public function getUserIdentifier(): string
@@ -134,7 +136,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -215,7 +216,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
@@ -293,14 +293,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
      /**
-     * Checks if the user has the ROLE_DRIVER role.
+     * Verifie si l'utilisateur à le ROLE_DRIVER.
      */
     public function isDriver(): bool
     {
         return in_array('ROLE_DRIVER', $this->getRoles());
     }
 
-    // ... (rest of your User entity code)
+    public function setIsDriver(bool $isDriver): static
+    {
+        $this->isDriver = $isDriver;
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, UserPreference>

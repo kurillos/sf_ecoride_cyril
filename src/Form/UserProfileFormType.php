@@ -8,8 +8,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserProfileFormType extends AbstractType
 {
@@ -50,6 +50,17 @@ class UserProfileFormType extends AbstractType
                 'attr' => [
                     'class' => 'user_preferences-collection',
                 ],
+            ])
+            ->add('desiredRole', ChoiceType::class, [
+                'label' => 'Êtes-vous passager, chauffeur ou les deux ?',
+                'choices' => [
+                    'Passager seulement' => 'passenger',
+                    'Chauffeur seulement' => 'driver',
+                    'Les deux'=> 'both',
+                ],
+                'mapped' => false,
+                'expanded' => false,
+                'multiple' => false,
             ])
         ;
     }

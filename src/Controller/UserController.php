@@ -42,6 +42,7 @@ final class UserController extends AbstractController
 
             return $this->redirectToRoute('app_user_profile');
         }
+        
 
         $preferencesForm = $this->createForm(UserProfilePreferencesType::class, $user);
         $preferencesForm->handleRequest($request);
@@ -55,11 +56,36 @@ final class UserController extends AbstractController
         $profileForm = $this->createForm(UserProfileFormType::class, $user);
         $profileForm->handleRequest($request);
 
-         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
+        if ($profileForm->isSubmitted() && $profileForm->isValid()) {
+            $desiredRoleChoice = $profileForm->get('desiredRole')->getData();
+
+            $roles = ['ROLE_USER']; // Role par défaut
+
+            $isDriver = false;
+            if ($desiredRoleChoice === 'driver' || $desiredRoleChoice === 'both') {
+                $roles[] = 'ROLE_DRIVER';
+                $isDriver = true;
+            }
+
+            $roles = array_unique($roles);
+
+            $user->setRoles($roles);
+            $user->setIsDriver($isDriver);
+
             $entityManager->flush();
             $this->addFlash('success', 'Vos informations personnelles ont été mises à jour !');
             return $this->redirectToRoute('app_user_profile');
         }
+        
+        $currentRoles = $user->getRoles();
+        $initialDesireRole = 'passenger';
+        if (in_array('ROLE_DRIVER', $currentRoles) && in_array('ROLE_USER', $currentRoles) && count($currentRoles) > 1) {
+            $initialDesireRole = 'both';
+        } elseif (in_array('ROLE_DRIVER', $currentRoles)) {
+            $initialDesireRole = 'driver';
+        }
+        
+        $profileForm->get('desiredRole')->setData($initialDesireRole);
 
         return $this->render('user/profile.html.twig', [
             'user' => $user,
@@ -67,5 +93,8 @@ final class UserController extends AbstractController
             'profileForm' => $profileForm->createView(),
             'preferencesForm' => $preferencesForm->createView(),
         ]);
+
+        
+
     }
 }
