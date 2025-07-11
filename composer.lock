@@ -1372,6 +1372,8 @@
             "time": "2025-03-06T22:45:56+00:00"
         },
         {
+<<<<<<< HEAD
+=======
             "name": "guzzlehttp/guzzle",
             "version": "7.9.3",
             "source": {
@@ -1697,6 +1699,7 @@
             "time": "2025-03-27T12:30:47+00:00"
         },
         {
+>>>>>>> master
             "name": "jms/metadata",
             "version": "2.8.0",
             "source": {
@@ -1761,6 +1764,8 @@
             "time": "2023-02-15T13:44:18+00:00"
         },
         {
+<<<<<<< HEAD
+=======
             "name": "knpuniversity/oauth2-client-bundle",
             "version": "v2.18.3",
             "source": {
@@ -1940,6 +1945,7 @@
             "time": "2023-03-17T15:20:52+00:00"
         },
         {
+>>>>>>> master
             "name": "monolog/monolog",
             "version": "3.9.0",
             "source": {
