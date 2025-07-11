@@ -40,10 +40,11 @@ Encore
 
     .addStyleEntry('main_styles', './assets/scss/custom_bootstrap.scss')
     .copyFiles({
-        from: './node_modules/bootstrap-icons/font/fonts/',
-        to: 'fonts/[name].[hash:8].[ext]',
-        pattern: /\.(woff|woff2|eot|ttf|otf|svg)$/
-    })
+    from: './assets/images',
+    to: 'images/[path][name].[ext]',
+})
+.addEntry('form_validation', './assets/js/form_validation.js')
+.addEntry('login_form', './assets/js/login_form_validation.js')
 ;
 
 module.exports = Encore.getWebpackConfig();

@@ -10,8 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-
-final class Version20250709123023 extends AbstractMigration
+final class Version20250710061707 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,7 +29,7 @@ final class Version20250709123023 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE vehicle DROP is_electric SQL
-        );
+            ALTER TABLE vehicle DROP is_electric
+        SQL);
     }
 }

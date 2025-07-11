@@ -2,19 +2,25 @@
     "devDependencies": {
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
+        "@hotwired/stimulus": "",
         "@popperjs/core": "^2.11.8",
+        "@symfony/stimulus-bridge": "",
+        "@symfony/ux-turbo": "^2.x",
         "@symfony/webpack-encore": "^5.0.0",
         "bootstrap": "^5.3.7",
         "core-js": "^3.38.0",
         "file-loader": "^6.2.0",
         "postcss-loader": "^8.1.1",
+        "postcss-scss": "^4.0.9",
         "regenerator-runtime": "^0.13.9",
         "sass": "^1.89.2",
         "sass-loader": "^16.0.5",
         "webpack": "^5.74.0",
         "webpack-cli": "^5.1.0",
         "webpack-dev-server": "^5.2.2",
-        "webpack-notifier": "^1.15.0"
+        "webpack-notifier": "^1.15.0",
+        "jest": "^29.x.x",
+        "jsdom": "^24.x.x"
     },
     "license": "UNLICENSED",
     "private": true,
@@ -22,6 +28,16 @@
         "dev-server": "encore dev-server",
         "dev": "encore dev",
         "watch": "encore dev --watch",
-        "build": "encore production --progress"
+        "build": "encore production --progress",
+        "test": "jest"
+    },
+    "dependencies": {
+        "bootstrap-icons": "^1.13.1",
+        "jest": "^30.0.3",
+        "jsdom": "^26.1.0"
+    },
+    "jest": {
+        "testEnvironment": "jsdom",
+        "setupFilesAfterEnv": ["<rootdir>/jest.setup.js"]
     }
 }

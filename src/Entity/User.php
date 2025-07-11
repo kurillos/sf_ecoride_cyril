@@ -11,6 +11,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use App\Entity\Vehicle;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -38,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+     #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private int $credits = 0;
 
     #[ORM\Column(length: 255)]
@@ -59,14 +61,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * #[Vich\UploadableField(mapping: 'profile_picture', fileNameProperty: 'profilePictureFilename')]
+     * @var File|null
+     */
     #[Vich\UploadableField(mapping: 'profile_picture', fileNameProperty: 'profilePictureFilename')]
     private ?File $profilePictureFile = null;
 
+    /**
+     * @ORM\Column(type: 'string', nullable: true)
+     * @var string|null
+     */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePictureFilename = null;
 
+    /**
+     * @var Collection<int, UserPreference>
+     */
     #[ORM\OneToMany(targetEntity: UserPreference::class, mappedBy: 'user', orphanRemoval: true, cascade: ['persist'])]
-    private Collection $userPreferences;
+    private collection $userPreferences;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isSmoker = false; 
@@ -78,43 +91,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(max: 500, maxMessage: 'Les informations supplémentaires ne peuvent pas dépasser {{ limit }} caractères.')]
     private ?string $additionalInfo = null;
 
+    
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Vehicle::class, orphanRemoval: true, cascade: ['persist'])]
     private Collection $vehicles;
 
-    /**
-     * @return Collection<int, Vehicle>
-     */
-    public function getVehicles(): Collection // <-- ET CELLES-CI
-    {
-        return $this->vehicles;
-    }
-
-    public function addVehicle(Vehicle $vehicle): static
-    {
-        if (!$this->vehicles->contains($vehicle)) {
-            $this->vehicles->add($vehicle);
-            $vehicle->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVehicle(Vehicle $vehicle): static
-    {
-        if ($this->vehicles->removeElement($vehicle)) {
-            // set the owning side to null (unless already changed)
-            if ($vehicle->getUser() === $this) {
-                $vehicle->setUser(null);
-            }
-        }
-
-        return $this;
-    }
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isDriver = false;
 
     public function __construct()
     {
-        $this->vehicles = new ArrayCollection();
         $this->userPreferences = new ArrayCollection();
+        $this->vehicles = new ArrayCollection();
         $this->updatedAt = new \DateTimeImmutable();
     }
 
@@ -136,8 +123,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
      * @see UserInterface
      */
     public function getUserIdentifier(): string
@@ -151,7 +136,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -232,7 +216,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
@@ -308,15 +291,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+
      /**
-     * Checks if the user has the ROLE_DRIVER role.
+     * Verifie si l'utilisateur à le ROLE_DRIVER.
      */
     public function isDriver(): bool
     {
         return in_array('ROLE_DRIVER', $this->getRoles());
     }
 
-    // ... (rest of your User entity code)
+    public function setIsDriver(bool $isDriver): static
+    {
+        $this->isDriver = $isDriver;
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, UserPreference>
