@@ -53,6 +53,10 @@ class Vehicle
     #[ORM\OneToMany(mappedBy: 'vehicle', targetEntity: Trip::class)]
     private Collection $trips;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'vehicles')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $owner = null;
+
     public function __construct()
     {
         $this->trips = new ArrayCollection();
@@ -176,6 +180,18 @@ class Vehicle
                 $trip->setVehicle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }
