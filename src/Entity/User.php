@@ -85,9 +85,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, options: ['default' => 'passenger'])]
     private ?string $desiredRole = 'passenger';
 
+    #[ORM\OneToMany(mappedBy: 'driver', targetEntity: Trip::class)]
+    private Collection $tripAsDriver;
+
     public function __construct()
     {
         $this->vehicles = new ArrayCollection();
+        $this->tripAsDriver = new ArrayCollection();
         $this->updatedAt = new \DateTimeImmutable();
     }
 
@@ -302,6 +306,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDesiredRole(string $desiredRole): static
     {
         $this->desiredRole = $desiredRole;
+        return $this;
+    }
+
+    public function getTripAsDriver(): Collection
+    {
+        return $this->tripAsDriver;
+    }
+
+    public function addTripAsDriver(Trip $tripAsDriver): static
+    {
+        if (!$this->tripAsDriver->contains($tripAsDriver)) {
+            $this->tripAsDriver->add($tripAsDriver);
+            $tripAsDriver->setDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTripAsDriver(Trip $tripAsDriver): static
+    {
+        if ($this->tripAsDriver->removeElement($tripAsDriver)) {
+            if ($tripAsDriver->getDriver() === $this) {
+                $tripAsDriver->setDriver(null);
+            }
+        }
+
         return $this;
     }
 }

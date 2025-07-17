@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\VehicleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Trip;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: VehicleRepository::class)]
 class Vehicle
@@ -47,9 +50,24 @@ class Vehicle
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isElectric = false;
 
+    #[ORM\OneToMany(mappedBy: 'vehicle', targetEntity: Trip::class)]
+    private Collection $trips;
+
+    public function __construct()
+    {
+        $this->trips = new ArrayCollection();
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
+    }
+
+     public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
     
     public function getId(): ?int
@@ -62,9 +80,23 @@ class Vehicle
         return $this->brand;
     }
 
+    
+    public function setBrand(string $brand): static
+    {
+        $this->brand = $brand;
+        return $this;
+    }
+
     public function getModel(): ?string
     {
         return $this->model;
+    }
+
+    
+    public function setModel(string $model): static
+    {
+        $this->model = $model;
+        return $this;
     }
 
     public function getColor(): ?string
@@ -72,49 +104,15 @@ class Vehicle
         return $this->color;
     }
 
-    public function getLicensePlate(): ?string
-    {
-        return $this->licensePlate;
-    }
-
-    public function getSeats(): ?int
-    {
-        return $this->seats;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function isElectric(): ?bool
-    {
-        return $this->isElectric;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function setBrand(string $brand): static
-    {
-        $this->brand = $brand;
-        return $this;
-    }
-
-    public function setModel(string $model): static
-    {
-        $this->model = $model;
-        return $this;
-    }
-
-    public function setColor(string $color): static
+     public function setColor(string $color): static
     {
         $this->color = $color;
         return $this;
+    }
+
+    public function getLicensePlate(): ?string
+    {
+        return $this->licensePlate;
     }
 
     public function setLicensePlate(string $licensePlate): static
@@ -123,22 +121,62 @@ class Vehicle
         return $this;
     }
 
+    public function getSeats(): ?int
+    {
+        return $this->seats;
+    }
+
     public function setSeats(int $seats): static
     {
         $this->seats = $seats;
         return $this;
     }
 
-    public function setType(string $type): static
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+     public function setType(string $type): static
     {
         $this->type = $type;
         return $this;
     }
- 
+
+    public function isElectric(): ?bool
+    {
+        return $this->isElectric;
+    }
 
     public function setIsElectric(bool $isElectric): static
     {
         $this->isElectric = $isElectric;
+        return $this;
+    }
+
+    public function getTrips(): Collection
+    {
+        return $this->trips;
+    }
+
+    public function addTrips(Trip $trip): static
+    {
+        if (!$this->trips->contains($trip)) {
+            $this->trips->add($trip);
+            $trip->setVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrip(Trip $trip): static
+    {
+        if ($this->trips->removeElement($trip)) {
+            if ($trip->getVehicle() === $this) {
+                $trip->setVehicle(null);
+            }
+        }
+
         return $this;
     }
 
