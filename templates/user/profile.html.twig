@@ -20,23 +20,21 @@
         {% endfor %}
 
         <div class="row">
-            {# Colonne de gauche (Photo de profil, infos, formulaire photo) #}
             <div class="col-md-3">
-                <div class="card shadow-sm mb-4 text-center"> {# Ajout de text-center pour le centrage de l'image #}
+                <div class="card shadow-sm mb-4 text-center">
                     {% if user.profilePictureFilename %}
                         <img src="{{ vich_uploader_asset(user, 'profilePictureFile') }}"
                              alt="photo de profil de {{ user.pseudo }}"
-                             class="img-fluid rounded-circle mb-3 mx-auto d-block" {# Ajout de mx-auto d-block pour le centrage #}
+                             class="img-fluid rounded-circle mb-3 mx-auto d-block"
                              style="width: 150px; height: 150px; object-fit: cover;">
                     {% else %}
-                        {# image par défaut si pas de photo #}
                         <img src="{{ asset('images/default-profile-picture.jpg') }}"
                              alt="photo de profil par défaut"
-                             class="img-fluid rounded-circle mb-3 mx-auto d-block" {# Ajout de mx-auto d-block pour le centrage #}
+                             class="img-fluid rounded-circle mb-3 mx-auto d-block"
                              style="width: 150px; height: 150px; object-fit: cover;">
                     {% endif %}
 
-                    <div class="card-body"> {# J'ai déplacé cette div ici pour mieux structurer le contenu de la carte #}
+                    <div class="card-body">
                         <h3>{{ user.pseudo }}</h3>
                         <p>{{ user.firstName }} {{ user.lastName }}</p>
                         <p>{{ user.email }}</p>
@@ -46,15 +44,15 @@
                                 <span class="badge bg-secondary">{{ role|replace({'ROLE_': '', '_': ' '})|title }}</span>
                             {% endfor %}
                         </p>
-                        {# Affichage des préférences directement depuis l'entité utilisateur pour la vue initiale #}
-                        <p>Fumeur: {{ user.isSmoker ? 'Oui' : 'Non' }}</p>
-                        <p>Accepte les animaux: {{ user.acceptsAnimals ? 'Oui' : 'Non' }}</p>
-                        {% if user.additionalInfo %}
+                
+                        <p>Fumeur: {{ user.userPreference.isSmoker ? 'Oui' : 'Non' }}</p>
+                        <p>Accepte les animaux: {{ user.userPreference.acceptsAnimals ? 'Oui' : 'Non' }}</p>
+                        {% if user.userPreference.additionalInfo %}
                             <p>Infos supplémentaires: {{ user.additionalInfo }}</p>
                         {% endif %}
                     </div>
 
-                    {# Formulaire pour changer la photo de profil #}
+                
                     <div class="card mt-4">
                         <div class="card-body text-center">
                             <h5 class="card-title">Changer ma photo de profil</h5>
@@ -64,10 +62,9 @@
                             {{ form_end(profilePictureForm) }}
                         </div>
                     </div>
-                </div> {# FIN DE card shadow-sm mb-4 #}
-            </div> {# FIN DE col-md-3 #}
+                </div> 
+            </div>
 
-            {# Colonne de droite (Onglets : Informations personnelles, Préférences, Véhicules) #}
             <div class="col-md-9">
                 <ul class="nav nav-tabs" id="profileTabs" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -82,21 +79,8 @@
                             Mes informations personnelles
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link"
-                                id="preferences-tab"
-                                data-bs-toggle="tab"
-                                data-bs-target="#preferences"
-                                type="button"
-                                role="tab"
-                                aria-controls="preferences"
-                                aria-selected="false">
-                            Mes préférences
-                        </button>
-                    </li>
-                    {# Afficher les véhicules seulement si l'utilisateur est chauffeur #}
-                    {% if user.isDriver() %}
-                    <li class="nav-item" role="presentation">
+  
+                                        <li class="nav-item" role="presentation">
                         <button class="nav-link"
                                 id="vehicles-tab"
                                 data-bs-toggle="tab"
@@ -108,11 +92,10 @@
                             Mes véhicules
                         </button>
                     </li>
-                    {% endif %}
                 </ul>
 
                 <div class="tab-content mt-3" id="profileTabsContent">
-                    {# Onglet "Mes informations personnelles" (Initialement actif) #}
+                    
                     <div class="tab-pane fade show active"
                          id="general-info"
                          role="tabpanel"
@@ -138,31 +121,6 @@
                         </div>
                     </div>
 
-                    {# Préférences utilisateur #}
-                    <div class="tab-pane fade"
-                         id="preferences"
-                         role="tabpanel"
-                         aria-labelledby="preferences-tab">
-                        <div class="card shadow-sm">
-                            <div class="card-header">
-                                Mes préférences
-                            </div>
-                            <div class="card-body">
-                                {% if preferencesForm is defined %}
-                                    {{ form_start(preferencesForm) }}
-                                        {{ form_row(preferencesForm.isSmoker) }}
-                                        {{ form_row(preferencesForm.acceptsAnimals) }}
-                                        {{ form_row(preferencesForm.additionalInfo) }}
-
-                                        <button type="submit" class="btn btn-success mt-3">Enregistrer les préférences</button>
-                                    {{ form_end(preferencesForm) }}
-                                {% else %}
-                                    <p>Formulaire des préférences non disponible.</p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-
                     {# Mes véhicules #}
                     {% if user.isDriver() %}
                     <div class="tab-pane fade"
@@ -174,8 +132,41 @@
                                 Mes véhicules
                             </div>
                             <div class="card-body">
-                                {# Afficher les véhicules ici #}
-                                <p>Fonctionnalité d'ajout/modification de véhicules à venir.</p>
+                                {% if vehiclesForm is defined %}
+                                <h3>Ajouter un véhicule</h3>
+                                {{ form_start(vehiclesForm, {'attr': {'id': 'vehicle_collection_form'}})  }}
+                                    <div id="vehicle-fields-list" data-prototype="{{ form_widget(vehiclesForm.vehicles.vars.prototype)|e('html_attr') }}">
+                                        {% for vehicleEntry in vehiclesForm.vehicles %}
+                                            <div class="vehicle-item mb-3 p-3 border rounded">
+                                                {{ form_widget(vehicleEntry) }}
+                                                <button type="button" class="btn btn-danger btn-sm remove-vehicle-button mt-2">Supprimer</button>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <button type="button" class="btn btn-primary add-another-vehicle mt-3">Ajouter un véhicule</button>
+                                    <button type="submit" class="btn btn-ecoride mt-3">Enregistrer</button>
+                                {{ form_end(vehiclesForm) }}
+
+                                {% if user.vehicles is not empty %}
+                                    <h4>Mes véhicules enregistrer</h4>
+                                    <ul class="list-group">
+                                        {% for vehicle in user.vehicles %}
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                {{ vehicle.brand|default('N/A') }} {{ vehicle.model|default('N/A') }} {{ vehicle.year|default('N/A') }} {{ vehicle.licensePlate|default('N/A') }}
+                                                <div>
+                                                    <a href="{{ path('app_vehicle_edit', {'id': vehicle.id}) }}" class="btn btn-sm btn-info">Modifier</a>
+                                                    <a href="{{ path('app_vehicle_delete', {'id': vehicle.id}) }}" class="btn btn-sm btn-danger">Supprimer</a>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>Vous n'avez pas encore de véhicules enregistrés.</p>
+                                {% endif %}
+
+                            {% else %}
+                                <p>Le formulaire de gestion des véhicules n'est pas disponibles.</p>
+                            {% endif %}
                             </div>
                         </div>
                     </div>

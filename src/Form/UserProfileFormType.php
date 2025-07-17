@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Entity\UserPreference;
+use App\Form\UserPreferenceType;
 
 class UserProfileFormType extends AbstractType
 {
@@ -40,16 +42,8 @@ class UserProfileFormType extends AbstractType
                     'placeholder' => 'Entrez votre pseudonyme',
                 ],
             ])
-            ->add('userPreferences', CollectionType::class, [
-                'entry_type' => UserPreferenceType::class,
-                'entry_options' => ['label' => false],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'label' => 'préférences utilisateur',
-                'attr' => [
-                    'class' => 'user_preferences-collection',
-                ],
+            ->add('userPreference', UserPreferenceType::class, [
+                'label' => 'false',
             ])
             ->add('desiredRole', ChoiceType::class, [
                 'label' => 'Êtes-vous passager, chauffeur ou les deux ?',
@@ -58,7 +52,6 @@ class UserProfileFormType extends AbstractType
                     'Chauffeur seulement' => 'driver',
                     'Les deux'=> 'both',
                 ],
-                'mapped' => false,
                 'expanded' => false,
                 'multiple' => false,
             ])

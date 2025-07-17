@@ -3,20 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserPreference;
 use App\Entity\Vehicle;
 use App\Form\UserProfileFormType;
 use App\Form\UserProfilePictureType;
+use App\Form\UserPreferenceType;
+use App\Form\UserVehiclesCollectionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Security\Core\User\UserInterface;
-use App\Form\UserPreferenceType;
-use App\Form\VehicleType;
-use App\Form\UserAllPreferencesFormType;
-use App\Form\UserVehiclesCollectionType;
+
+
 
 final class UserController extends AbstractController
 {
@@ -25,50 +25,63 @@ final class UserController extends AbstractController
     public function profile(Request $request, EntityManagerInterface $entityManager): Response
     {
         /** @var User $user */
-        $user = $this->getUser();//Récupére l'utilisateur connecté
+        $user = $this->getUser();
 
-        // Traitement du formulaire
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $userPreference = $user->getUserPreference();
+
+        if (!$userPreference) {
+            $userPreference = new UserPreference();
+            $user->setUserPreference($userPreference);
+        }
+
         $profileForm = $this->createForm(UserProfileFormType::class, $user);
         $profileForm->handleRequest($request);
 
         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
-            $entityManager->persist($user);
+            $user = $profileForm->getData();
+
+            $currentRoles = $user->getRoles();
+            $desiredRole = $user->getDesiredRole();
+
+            if ($desiredRole === 'passenger' && in_array('ROLE_DRIVER', $currentRoles)) {
+                $user->setRoles(array_diff($currentRoles, ['ROLE_DRIVER']));
+            } elseif (($desiredRole === 'driver' || $desiredRole === 'both') && !in_array('ROLE_DRIVER', $currentRoles)) {
+                $user->setRoles(array_unique(array_merge($currentRoles, ['ROLE_DRIVER'])));
+            }
+
+            if (!in_array('ROLE_USER', $user->getRoles())) {
+                $user->setRoles(array_unique(array_merge($user->getRoles(), ['ROLE_USER'])));
+            }
+
             $entityManager->flush();
             $this->addFlash('success', 'Votre profil a été mis à jour.');
             return $this->redirectToRoute('app_user_profile');
         }
 
-        // Crée le formulaire pour la photo de profil
+
         $profilePictureForm = $this->createForm(UserProfilePictureType::class, $user);
         $profilePictureForm->handleRequest($request);
 
         if ($profilePictureForm->isSubmitted() && $profilePictureForm->isValid()) {
-            // VichUpload gère automatiquement l'upload de la photo de profil
-            $entityManager->persist($user);
             $entityManager->flush();
-
             $this->addFlash('success', 'Votre photo de profil a été mise à jour avec succès.');
-
             return $this->redirectToRoute('app_user_profile');
         }
 
-        $preferencesForm = $this->createForm(UserPreferenceType::class, $user);
+        $preferencesForm = $this->createForm(UserPreferenceType::class, $userPreference);
         $preferencesForm->handleRequest($request);
 
         if ($preferencesForm->isSubmitted() && $preferencesForm->isValid()) {
             $entityManager->flush();
+            $entityManager->refresh($user);
             $this->addFlash('success', 'Vos préférences ont été mises à jour !');
             return $this->redirectToRoute('app_user_profile');
         }
 
-        $profileForm = $this->createForm(UserProfileFormType::class, $user);
-        $profileForm->handleRequest($request);
-
-         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
-            $entityManager->flush();
-            $this->addFlash('success', 'Vos informations personnelles ont été mises à jour !');
-            return $this->redirectToRoute('app_user_profile');
-        }
 
         $vehiclesForm = $this->createForm(UserVehiclesCollectionType::class, $user);
         $vehiclesForm->handleRequest($request);
@@ -84,7 +97,7 @@ final class UserController extends AbstractController
             }
         }
 
-        // Récupére les véhicules de l'utilisateur
+
         $userVehicles = $user->getVehicles();
 
         return $this->render('user/profile.html.twig', [
@@ -93,7 +106,8 @@ final class UserController extends AbstractController
             'profileForm' => $profileForm->createView(),
             'preferencesForm' => $preferencesForm->createView(),
             'vehicles' => $userVehicles,
-            // $addVehiclesForm->createView(), à rajouter pour l'ajout de véhicules.
+            'vehiclesForm' => $vehiclesForm->createView(),
+            // 'addVehiclesForm' => $addVehiclesForm->createView(), // Décommentez si vous l'utilisez
         ]);
     }
 }

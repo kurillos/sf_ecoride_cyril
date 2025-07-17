@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToOne;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -75,32 +76,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePictureFilename = null;
 
-    /**
-     * @var Collection<int, UserPreference>
-     */
-    #[ORM\OneToMany(targetEntity: UserPreference::class, mappedBy: 'user', orphanRemoval: true, cascade: ['persist'])]
-    private collection $userPreferences;
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?UserPreference $userPreference = null;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    private bool $isSmoker = false; 
-
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    private bool $acceptsAnimals = false; 
-
-    #[ORM\Column(type: 'text', nullable: true)]
-    #[Assert\Length(max: 500, maxMessage: 'Les informations supplémentaires ne peuvent pas dépasser {{ limit }} caractères.')]
-    private ?string $additionalInfo = null;
-
-    
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Vehicle::class, orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Vehicle::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $vehicles;
 
-    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-    private bool $isDriver = false;
+    #[ORM\Column(length: 255, options: ['default' => 'passenger'])]
+    private ?string $desiredRole = 'passenger';
 
     public function __construct()
     {
-        $this->userPreferences = new ArrayCollection();
         $this->vehicles = new ArrayCollection();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -258,82 +244,64 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-     public function isSmoker(): ?bool
+    public function getUserPreference(): ?UserPreference
     {
-        return $this->isSmoker;
+        return $this->userPreference;
     }
 
-    public function setIsSmoker(bool $isSmoker): static
+    public function setUserPreference(?UserPreference $userPreference): static
     {
-        $this->isSmoker = $isSmoker;
+        if ($userPreference === null && $this->userPreference !== null) {
+            $this->userPreference->setUser(null);
+        }
+
+        if ($userPreference !== null && $userPreference->getUser() !== $this) {
+            $userPreference->setUser($this);
+        }
+
+        $this->userPreference = $userPreference;
+
         return $this;
     }
 
-    public function isAcceptsAnimals(): ?bool
+    public function getVehicles(): Collection
     {
-        return $this->acceptsAnimals;
+        return $this->vehicles;
     }
 
-    public function setAcceptsAnimals(bool $acceptsAnimals): static
+    public function addVehicle(Vehicle $vehicle): static
     {
-        $this->acceptsAnimals = $acceptsAnimals;
+        if (!$this->vehicles->contains($vehicle)) {
+            $this->vehicles->add($vehicle);
+            $vehicle->setUser($this);
+        }
+
         return $this;
     }
 
-    public function getAdditionalInfo(): ?string
+    public function removeVehicle(Vehicle $vehicle): static
     {
-        return $this->additionalInfo;
-    }
-
-    public function setAdditionalInfo(?string $additionalInfo): static
-    {
-        $this->additionalInfo = $additionalInfo;
+        if ($this->vehicles->removeElement($vehicle)){
+            if ($vehicle->getUser() === $this) {
+                $vehicle->setUser(null);
+            }      
+        }
         return $this;
     }
 
-
-     /**
-     * Verifie si l'utilisateur à le ROLE_DRIVER.
-     */
     public function isDriver(): bool
     {
         return in_array('ROLE_DRIVER', $this->getRoles());
     }
 
-    public function setIsDriver(bool $isDriver): static
+    public function getDesiredRole(): ?string
     {
-        $this->isDriver = $isDriver;
-
-        return $this;
+        return $this->desiredRole;
     }
 
-    /**
-     * @return Collection<int, UserPreference>
-     */
-    public function getUserPreferences(): Collection
+    public function setDesiredRole(string $desiredRole): static
     {
-        return $this->userPreferences;
-    }
-
-    public function addUserPreference(UserPreference $userPreference): static
-    {
-        if (!$this->userPreferences->contains($userPreference)) {
-            $this->userPreferences->add($userPreference);
-            $userPreference->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserPreference(UserPreference $userPreference): static
-    {
-        if ($this->userPreferences->removeElement($userPreference)) {
-            // set the owning side to null (unless already changed)
-            if ($userPreference->getUser() === $this) {
-                $userPreference->setUser(null);
-            }
-        }
-
+        $this->desiredRole = $desiredRole;
         return $this;
     }
 }

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250710061707 extends AbstractMigration
+final class Version20250715092353 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20250710061707 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE user ADD is_driver TINYINT(1) DEFAULT 0 NOT NULL
+            ALTER TABLE user ADD desired_role VARCHAR(255) DEFAULT 'passenger' NOT NULL
         SQL);
     }
 
@@ -29,7 +29,7 @@ final class Version20250710061707 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE vehicle DROP is_electric
+            ALTER TABLE `user` DROP desired_role
         SQL);
     }
 }
