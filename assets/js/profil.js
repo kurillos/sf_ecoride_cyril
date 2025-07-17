@@ -1,44 +1,53 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const preferencesCollection = document.querySelector('.user-preferences-collection');
 
-    if (preferencesCollection) {
-        let index = preferencesCollection.CDATA_SECTION_NODE.index;
+    const addAnotherVehicleBtn = document.querySelector('.add-another-vehicle');
+    const vehicleFieldsList = document.getElementById('vehicle-fields-list');
 
-        const addPreferenceButton = document.querySelector('.add-preference-button');
-        const removePreferenceButtons = document.querySelectorAll('.remove-preference-button');
+    console.log("Script profil.js chargé !");
+    console.log("Bouton d'ajout trouvé:", addAnotherVehicleBtn);
+    console.log("Liste des champs de véhicules trouvés:", vehicleFieldsList);
 
-        removePreferenceButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                button.closest('.preference-item').remove();
-            });
-        });
+    if (addAnotherVehicleBtn && vehicleFieldsList) {
+        let index = vehicleFieldsList.children.length;
+        console.log("Nombre initial de véhicules (enfants) détectés:", index);
 
-        addPreferenceButton.addEventListener('click', () => {
-            addPreferenceForm(preferencesCollection, index);
-            index++;
-        });
+        addAnotherVehicleBtn.addEventListener('click', () => {
+            console.log("Bouton 'Ajouter un véhicule' cliqué !");
+            const prototype = vehicleFieldsList.dataset.prototype;
 
-        // ajouter un champ de préférence
-        function addPreferenceForm(collectionHolder, index) {
-            const prototype = collectionHolder.dataset.protoype;
+            if (!prototype) {
+                console.error("Erreur: l'attribut data-prototype est manquant");
+                return;
+            }
+
+
+            // Remplace les occurences __name par l'index actuel
             let newForm = prototype.replace(/__name__/g, index);
 
-            const div = document.createElement('div');
-            div.innerHTML = newForm;
-            div.classList.add('preference-item', 'mb-3', 'p-3', 'rounded');
+            const newVehicleDiv = document.createElement('div');
+            newVehicleDiv.classList.add('vehicle-item', 'mb-3', 'p-3', 'border', 'rounded');
+            newVehicleDiv.innerHTML = newForm; // insére le prototype du formulaire.
 
 
-        // ajout d'un bouton de suppression
-        const removeButton = document.createElement('button');
-        removeButton.type ='button';
-        removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-preference-button', 'mt-2');
-        removeButton.textContent = 'Supprimer';
-        div.appendChild(removeButton);
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'remove-vehicle-button', 'mt-2');
+            removeButton.textContent = 'Supprimer';
+            removeButton.addEventListener('click', () => {
+                newVehicleDiv.remove();
+            });
+            newVehicleDiv.appendChild(removeButton);
 
-        collectionHolder.appendChild(div);
+            vehicleFieldsList.appendChild(newVehicleDiv);
+            index++;
+            console.log("Nouveau véhicule ajouté, nouvel index:", index);
+        });
 
-        removeButton.addEventListener('click', () => {
-            div.remove();
-        })
-        }
-    } })
+        document.querySelectorAll('.remove-vehicle-button').forEach(button => {
+            button.addEventListener('click', () => {
+                console.log("Button supprimer existant cliqué !");
+                button.closest('.vehicle-item').remove();
+            });
+        });
+    } else {
+        console.warn("Certains élements JS n'ont pas été trouvés. Bouton AJouter:", addAnotherVehicleBtn, "Liste Véhicules:", vehicleFieldsList);
+    }
