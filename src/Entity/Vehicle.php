@@ -17,10 +17,6 @@ class Vehicle
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'vehicles')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
-
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "La marque ne peut pas être vide.")]
     private ?string $brand = null;
@@ -60,18 +56,6 @@ class Vehicle
     public function __construct()
     {
         $this->trips = new ArrayCollection();
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-     public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
     }
     
     public function getId(): ?int

@@ -79,7 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?UserPreference $userPreference = null;
 
-    #[ORM\OneToMany(targetEntity: Vehicle::class, mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Vehicle::class, mappedBy: 'owner', orphanRemoval: true, cascade: ['persist'])]
     private Collection $vehicles;
 
     #[ORM\Column(length: 255, options: ['default' => 'passenger'])]
@@ -277,7 +277,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->vehicles->contains($vehicle)) {
             $this->vehicles->add($vehicle);
-            $vehicle->setUser($this);
+            $vehicle->setOwner($this);
         }
 
         return $this;
@@ -286,8 +286,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeVehicle(Vehicle $vehicle): static
     {
         if ($this->vehicles->removeElement($vehicle)){
-            if ($vehicle->getUser() === $this) {
-                $vehicle->setUser(null);
+            if ($vehicle->getOwner() === $this) {
+                $vehicle->setOwner(null);
             }      
         }
         return $this;
