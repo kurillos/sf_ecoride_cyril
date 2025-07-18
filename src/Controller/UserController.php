@@ -11,6 +11,7 @@ use App\Form\UserPreferenceType;
 use App\Form\UserVehiclesCollectionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -108,6 +109,41 @@ final class UserController extends AbstractController
             'vehicles' => $userVehicles,
             'vehiclesForm' => $vehiclesForm->createView(),
             // 'addVehiclesForm' => $addVehiclesForm->createView(), // Décommentez si vous l'utilisez
+        ]);
+    }
+
+    #[Route('/profile/trips-history', name: 'app_driver_trips_history')]
+    public function driverTripsHistory(Security $security, EntityManagerInterface $entityManager): Response
+    {
+        $user = $security->getUser();
+
+        if (!$user) {
+            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $proposedTrips = $entityManager->getRepository(Trip::class)->findBy(
+            ['driver' => $user],
+            ['departureTime' => 'ASC']
+        );
+
+        // Filtres à venir et passés
+        $upcomingTrips = [];
+        $pastTrips = [];
+        $now = new \DateTimeImmutable();
+
+        forEach ($proposedTrips as $trip) {
+            if ($trip->getDepartureTime() > $now) {
+                $upcomingTrips[] = $trip;
+            } else {
+                $pastTrips[] = $trip;
+            }
+        }
+
+        return $this->render('user/driver_trips_history.html.twig', [
+            'user' => $user,
+            'upcoming_trips' => $upcomingTrips,
+            'past_trips' => $pastTrips,
         ]);
     }
 }
