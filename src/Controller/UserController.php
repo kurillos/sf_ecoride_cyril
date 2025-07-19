@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\UserPreference;
 use App\Entity\Vehicle;
+use App\Entity\Trip;
 use App\Form\UserProfileFormType;
 use App\Form\UserProfilePictureType;
 use App\Form\UserPreferenceType;
