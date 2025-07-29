@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Trip;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,10 +15,16 @@ use Symfony\Component\Routing\Annotation\Route; // Pour les annotations
 class HomeController extends AbstractController
 {
      #[Route('/', name: 'app_home')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $latestTrips = $entityManager->getRepository(Trip::class)->findBy(
+            [],
+            ['createdAt' => 'DESC'],
+            4
+        );
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
+            'latest_trips' => $latestTrips,
         ]);
     }
 

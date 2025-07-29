@@ -41,15 +41,9 @@
                         <p>Crédits : {{ user.credits }}</p>
                         <p>Rôles :
                             {% for role in user.roles %}
-                                <span class="badge bg-secondary">{{ role|replace({'ROLE_': '', '_': ' '})|title }}</span>
+                                <span class="badge bg-secondary">{{ role|replace({'ROLE_': ''})|title }}</span>
                             {% endfor %}
                         </p>
-                
-                        <p>Fumeur: {{ user.userPreference.isSmoker ? 'Oui' : 'Non' }}</p>
-                        <p>Accepte les animaux: {{ user.userPreference.acceptsAnimals ? 'Oui' : 'Non' }}</p>
-                        {% if user.userPreference.additionalInfo %}
-                            <p>Infos supplémentaires: {{ user.additionalInfo }}</p>
-                        {% endif %}
                     </div>
 
                 
@@ -112,7 +106,14 @@
                                     {{ form_row(profileForm.lastName) }}
                                     {{ form_row(profileForm.pseudo) }}
                                     {{ form_row(profileForm.desiredRole) }}
-                                    <button type="submit" class="btn btn-success mt-2">Mettre à jour</button>
+                                    {{ form_row(profileForm.userPreference.additionalInfo) }}
+                                    {{ form_row(profileForm.userPreference.isSmoker) }}
+                                    {{ form_row(profileForm.userPreference.acceptsAnimals) }}
+
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <a href="{{ path('app_trip_new') }}" class="btn btn-primary me-2">Nouveau covoiturage</a>
+                                        <button type="submit" class="btn btn-success">Mettre à jour</button>
+                                    </div>
                                 {{ form_end(profileForm) }}
                             {% else %}
                                 <p>Le formulaire de mise à jour des informations personnelles n'est pas disponible.</p>

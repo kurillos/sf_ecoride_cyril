@@ -11,23 +11,23 @@
         <section class="text-center text-white d-flex align-items-center justify-content-center py-5">
             <div class="container">
                 <div class="search-box mx-auto mt-5">
-                    <form action="#">
+                    <form action="{{ path('app_trip_search') }}" method="get">
                         <div class="row g-3 justify-content-center">
                             <div class="col-md-3 col-sm-6 input-group mb-3">
                                 <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
-                                <input type="text" class="form-control" id="departure" placeholder="Ville de départ" required>
+                                <input type="text" class="form-control" id="departure" name="departure" placeholder="Ville de départ" required>
                             </div>
                             <div class="col-md-3 col-sm-6 input-group mb-3">
                                 <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
-                                <input type="text" class="form-control" id="destination" placeholder="Ville d'arrivée" required>
+                                <input type="text" class="form-control" id="destination" name="destination" placeholder="Ville d'arrivée" required>
                             </div>
                             <div class="col-md-3 col-sm-6 input-group mb-3">
                                 <span class="input-group-text"><i class="bi bi-calendar-date"></i></span>
-                                <input type="text" class="form-control" id="date" placeholder="Date de départ" required>
+                                <input type="date" class="form-control" id="date" name="date" placeholder="Date de départ" required>
                             </div>
                             <div class="col-md-3 col-sm-6 input-group mb-3">
                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                <input type="text" class="form-control" id="passengers" placeholder="1 passager" required>
+                                <input type="number" class="form-control" id="passengers" name="passengers" placeholder="1 passager" required min="1">
                             </div>
                         </div>
 
@@ -60,12 +60,21 @@
             {# BLOC "TRAJETS LES PLUS FRÉQUENTS" #}
             <div class="col-md-6">
                 <div class="travel d-flex flex-column align-items-center">
-                    <h2 class="text-success">Trajets les plus fréquents</h2>
-                    <div class="d-flex flex-column align-items-center"> 
-                        <button class="btn btn-success text-white mb-2"><a href="#" class="text-white text-decoration-none">Lyon -> Marseille</a></button>
-                        <button class="btn btn-success text-white mb-2"><a href="#" class="text-white text-decoration-none">Rouen -> Nantes</a></button>
-                        <button class="btn btn-success text-white mb-2"><a href="#" class="text-white text-decoration-none">Lille -> Bruxelle</a></button>
-                        <button class="btn btn-success text-white"><a href="#" class="text-white text-decoration-none">Bordeaux -> Pau</a></button>
+                    <h2 class="text-success">Trajets le splsu fréquents</h2>
+                    <div class="row">
+                        {% for trip in latest_trips %}
+                            <div class="col-md-6 mb-4">
+                                <a href="{{ path('app_trip_show', {'id': trip.id}) }}" class="card-link">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-success">{{ trip.departureLocation }} &rarr; {{ trip.destinationLocation }}</h5>
+                                            <p class="card-text">Départ: {{ trip.departureTime|date('d/m/Y H:i') }}</p>
+                                            <p class="card-text">Prix: {{ trip.pricePerSeat }} crédits</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

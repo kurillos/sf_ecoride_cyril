@@ -46,6 +46,11 @@ class Vehicle
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isElectric = false;
 
+    public function isEcological(): ?bool
+    {
+        return $this->isElectric;
+    }
+
     #[ORM\OneToMany(mappedBy: 'vehicle', targetEntity: Trip::class)]
     private Collection $trips;
 
@@ -141,6 +146,8 @@ class Vehicle
         $this->isElectric = $isElectric;
         return $this;
     }
+
+    
 
     public function getTrips(): Collection
     {

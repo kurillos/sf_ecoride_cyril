@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Booking;
 use App\Entity\User;
 use App\Entity\UserPreference;
 use App\Entity\Vehicle;
@@ -17,7 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 
 final class UserController extends AbstractController
@@ -109,42 +111,100 @@ final class UserController extends AbstractController
             'preferencesForm' => $preferencesForm->createView(),
             'vehicles' => $userVehicles,
             'vehiclesForm' => $vehiclesForm->createView(),
-            // 'addVehiclesForm' => $addVehiclesForm->createView(), // Décommentez si vous l'utilisez
         ]);
     }
 
-    #[Route('/profile/trips-history', name: 'app_driver_trips_history')]
-    public function driverTripsHistory(Security $security, EntityManagerInterface $entityManager): Response
+    #[Route('/profile/trips-history', name: 'app_user_trips_history')]
+    #[IsGranted('ROLE_USER')]
+    public function tripsHistory(Security $security, EntityManagerInterface $entityManager): Response
     {
         $user = $security->getUser();
 
-        if (!$user) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_login');
-        }
+        $driverTrips = $entityManager->getRepository(Trip::class)->findBy(['driver' => $user]);
+        $passengerBookings = $entityManager->getRepository(Booking::class)->findBy(['user' => $user]);
 
-        $proposedTrips = $entityManager->getRepository(Trip::class)->findBy(
-            ['driver' => $user],
-            ['departureTime' => 'ASC']
-        );
-
-        // Filtres à venir et passés
-        $upcomingTrips = [];
-        $pastTrips = [];
-        $now = new \DateTimeImmutable();
-
-        forEach ($proposedTrips as $trip) {
-            if ($trip->getDepartureTime() > $now) {
-                $upcomingTrips[] = $trip;
-            } else {
-                $pastTrips[] = $trip;
-            }
-        }
-
-        return $this->render('user/driver_trips_history.html.twig', [
-            'user' => $user,
-            'upcoming_trips' => $upcomingTrips,
-            'past_trips' => $pastTrips,
+        return $this->render('user/trips_history.html.twig', [
+            'driverTrips' => $driverTrips,
+            'passengerBookings' => $passengerBookings,
         ]);
+    }
+
+    #[Route('/profile/credits', name: 'app_user_credits')]
+    #[IsGranted('ROLE_USER')]
+    public function credits(Security $security): Response
+    {
+        $user = $security->getUser();
+
+        return $this->render('user/credits.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('/booking/{id}/cancel', name: 'app_booking_cancel', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function cancelBooking(Request $request, Booking $booking, EntityManagerInterface $entityManager, Security $security, MailerInterface $mailer): Response
+    {
+        $user = $security->getUser();
+
+        // Valider le jeton CSRF
+        if (!$this->isCsrfTokenValid('cancel' . $booking->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton de sécurité invalide. Veuillez réessayer.');
+            return $this->redirectToRoute('app_user_trips_history');
+        }
+
+        if ($booking->getUser() !== $user) {
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à annuler cette réservation.');
+            return $this->redirectToRoute('app_user_trips_history');
+        }
+
+        if ($booking->getTrip()->getDepartureTime() < new \DateTimeImmutable()) {
+            $this->addFlash('error', 'Vous ne pouvez pas annuler une réservation pour un trajet déjà passé.');
+            return $this->redirectToRoute('app_user_trips_history');
+        }
+
+        try {
+            $refundAmount = $booking->getSeats() * $booking->getTrip()->getPricePerSeat();
+            $user->setCredits($user->getCredits() + $refundAmount);
+
+            $booking->setStatus('cancelled');
+
+            $trip = $booking->getTrip();
+            $trip->setAvailableSeats($trip->getAvailableSeats() + $booking->getSeats());
+
+            $entityManager->flush();
+
+            // Send cancellation email to passenger
+            $emailPassenger = (new Email())
+                ->from('no-reply@ecoride.com')
+                ->to($user->getEmail())
+                ->subject('Annulation de votre réservation EcoRide')
+                ->html($this->renderView('emails/cancellation_confirmation.html.twig', [
+                    'booking' => $booking,
+                    'trip' => $trip,
+                    'user' => $user,
+                ]));
+
+            $mailer->send($emailPassenger);
+
+            // Send cancellation email to driver
+            $emailDriver = (new Email())
+                ->from('no-reply@ecoride.com')
+                ->to($trip->getDriver()->getEmail())
+                ->subject('Annulation d\'une réservation pour votre covoiturage EcoRide')
+                ->html($this->renderView('emails/cancellation_driver_notification.html.twig', [
+                    'booking' => $booking,
+                    'trip' => $trip,
+                    'driver' => $trip->getDriver(),
+                    'passenger' => $user,
+                ]));
+
+            $mailer->send($emailDriver);
+
+            $this->addFlash('success', 'Votre réservation a été annulée et vos crédits ont été recrédités.');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Une erreur est survenue lors de l\'annulation de la réservation : ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_user_trips_history');
     }
 }

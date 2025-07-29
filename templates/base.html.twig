@@ -1,19 +1,39 @@
 <!DOCTYPE html>
 <html>
     <head>
-        {# ... #}
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
             {{ encore_entry_link_tags('main_styles') }}
         {% endblock %}
-        {# ... #}
     </head>
-    <body>
+    <body class="d-flex flex-column min-vh-100">
          <header>
             {% include 'partials/navbar.html.twig' %}
         </header>
 
-        {% block body %}{% endblock %}
+        <main class="flex-grow-1 container mt-4">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('warning') %}
+                <div class="alert alert-warning" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('info') %}
+                <div class="alert alert-info" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% block body %}{% endblock %}
+        </main>
 
         {% include 'partials/footer.html.twig' %}
 

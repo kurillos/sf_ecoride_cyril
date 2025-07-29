@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <p>Bonjour {{ passenger.pseudo }},</p>
+    <p>Le trajet de {{ trip.departureLocation }} à {{ trip.destinationLocation }} prévu le {{ trip.departureTime|date('d/m/Y H:i') }} a été annulé par le conducteur.</p>
+    <p>Vous avez été remboursé de {{ trip.pricePerSeat * booking.seats }} crédits.</p>
+    <p>Nous sommes désolés pour ce désagrément.</p>
+    <p>L'équipe EcoRide</p>
+{% endblock %}

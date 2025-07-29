@@ -26,33 +26,29 @@
                     <a class="nav-link" href="#">Contact</a>
                 </li>
                 {% if app.user %}
-                    {# Si l'utilisateur est CONNECTÉ #}
-                    <li class="nav-item">
-                        <span class="nav-link disabled text-muted">Bonjour, {{ app.user.pseudo }}</span>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if app.user.profilePictureFilename %}
+                                <img src="{{ vich_uploader_asset(app.user, 'profilePictureFile') }}" 
+                                    alt="Photo de profil de {{ app.user.pseudo }}"
+                                    class="rounded-circle me-2"
+                                    style="width: 30px; height:30px; object-fit: cover;">
+                            {% else %}
+                                <img src="{{ asset('images/default-profile-picture.jpg') }}"
+                                    alt="Photo de profil par défaut"
+                                    class="rounded-circle me-2"
+                                    style="width: 30px; height:30px; object-fit: cover;">
+                            {% endif %}
+                            {{ app.user.pseudo }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ path('app_user_trips_history') }}">Vos trajets</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_user_profile') }}">Profil</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_user_credits') }}">Ajout de crédits</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                        </ul>
                     </li>
-            </ul>
-
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item d-flex align-items-center">
-                    {# Profil miniature #}
-                    {% if app.user.profilePictureFilename %}
-                        <img src="{{ vich_uploader_asset(app.user, 'profilePictureFile') }}" 
-                            alt="Photo de profil de {{ app.user.pseudo }}"
-                            class="rounded-circle me-2"
-                            style="width: 30px; height:30px; object-fit: cover;">
-                    {% else %}
-                        <img src="{{ asset('images/default-profile-picture.jpg') }}"
-                            alt="Photo de profil par défaut"
-                            class="rounded-circle me-2"
-                            style="width: 30px; height:30px; object-fit: cover;">
-                    {% endif %}
-                    <a class="nav-link" href="{{ path('app_user_profile') }}">
-                        Bienvenue, {{ app.user.pseudo }}                            
-                    </a>
-                </li>
-                <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
-                </li>
                 {% else %}
                     {# Si l'utilisateur n'est PAS CONNECTÉ #}
                     <li class="nav-item">

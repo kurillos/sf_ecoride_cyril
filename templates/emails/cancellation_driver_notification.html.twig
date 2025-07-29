@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Annulation d'une réservation pour votre covoiturage EcoRide</title>
+</head>
+<body>
+    <h1>Annulation d'une réservation pour votre covoiturage EcoRide</h1>
+
+    <p>Bonjour {{ driver.firstName }},</p>
+
+    <p>Une réservation a été annulée pour votre covoiturage :</p>
+
+    <ul>
+        <li><strong>Départ :</strong> {{ trip.departureLocation }}</li>
+        <li><strong>Destination :</strong> {{ trip.destinationLocation }}</li>
+        <li><strong>Date et heure de départ :</strong> {{ trip.departureTime|date('d/m/Y H:i') }}</li>
+        <li><strong>Places annulées :</strong> {{ booking.seats }}</li>
+    </ul>
+
+    <p>Le passager qui a annulé est : {{ passenger.pseudo }} ({{ passenger.email }})</p>
+
+    <p>Merci d'utiliser EcoRide !</p>
+
+    <p>L'équipe EcoRide</p>
+</body>
+</html>

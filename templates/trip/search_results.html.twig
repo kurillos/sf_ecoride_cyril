@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Résultats de la recherche</h1>
+
+        {% if trips %}
+            <div class="row">
+                {% for trip in trips %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card {% if trip.vehicle.isElectric %}border-success{% endif %}">
+                            <div class="card-body">
+                                {% if trip.vehicle.isElectric %}
+                                    <span class="badge bg-success mb-2">Véhicule électrique</span>
+                                {% endif %}
+                                <h5 class="card-title text-success">{{ trip.departureLocation }} &rarr; {{ trip.destinationLocation }}</h5>
+                                <p class="card-text"><strong>Véhicule:</strong> {{ trip.vehicle.brand }} {{ trip.vehicle.model }}</p>
+                                <p class="card-text"><strong>Énergie:</strong> {% if trip.vehicle.isElectric %}Électrique{% else %}Thermique{% endif %}</p>
+                                <p class="card-text">Départ: {{ trip.departureTime|date('d/m/Y H:i') }}</p>
+                                <p class="card-text">Prix: {{ trip.pricePerSeat }} crédits</p>
+                                <a href="{{ path('app_trip_show', {'id': trip.id}) }}" class="btn btn-primary">Voir le trajet</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <p>Aucun covoiturage trouvé pour votre recherche.</p>
+                <p>Souhaitez-vous <a href="{{ path('app_trip_new', {'departure': departure, 'destination': destination, 'date': date}) }}">proposer un nouveau trajet</a> ?</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -88,11 +88,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'driver', targetEntity: Trip::class)]
     private Collection $tripAsDriver;
 
+    #[ORM\OneToMany(mappedBy: 'ratedUser', targetEntity: Rating::class, orphanRemoval: true)]
+    private Collection $ratingsReceived;
+
+    #[ORM\OneToMany(mappedBy: 'ratingUser', targetEntity: Rating::class, orphanRemoval: true)]
+    private Collection $ratingsGiven;
+
     public function __construct()
     {
         $this->vehicles = new ArrayCollection();
         $this->tripAsDriver = new ArrayCollection();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->ratingsReceived = new ArrayCollection();
+        $this->ratingsGiven = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -329,6 +337,81 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->tripAsDriver->removeElement($tripAsDriver)) {
             if ($tripAsDriver->getDriver() === $this) {
                 $tripAsDriver->setDriver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAverageRating(): ?float
+    {
+        $ratings = $this->getRatingsReceived();
+        if ($ratings->isEmpty()) {
+            return null;
+        }
+
+        $total = 0;
+        foreach ($ratings as $rating) {
+            $total += $rating->getRating();
+        }
+
+        return $total / count($ratings);
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatingsReceived(): Collection
+    {
+        return $this->ratingsReceived;
+    }
+
+    public function addRatingsReceived(Rating $ratingsReceived): static
+    {
+        if (!$this->ratingsReceived->contains($ratingsReceived)) {
+            $this->ratingsReceived->add($ratingsReceived);
+            $ratingsReceived->setRatedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRatingsReceived(Rating $ratingsReceived): static
+    {
+        if ($this->ratingsReceived->removeElement($ratingsReceived)) {
+            // set the owning side to null (unless already changed)
+            if ($ratingsReceived->getRatedUser() === $this) {
+                $ratingsReceived->setRatedUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatingsGiven(): Collection
+    {
+        return $this->ratingsGiven;
+    }
+
+    public function addRatingsGiven(Rating $ratingsGiven): static
+    {
+        if (!$this->ratingsGiven->contains($ratingsGiven)) {
+            $this->ratingsGiven->add($ratingsGiven);
+            $ratingsGiven->setRatingUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRatingsGiven(Rating $ratingsGiven): static
+    {
+        if ($this->ratingsGiven->removeElement($ratingsGiven)) {
+            // set the owning side to null (unless already changed)
+            if ($ratingsGiven->getRatingUser() === $this) {
+                $ratingsGiven->setRatingUser(null);
             }
         }
 

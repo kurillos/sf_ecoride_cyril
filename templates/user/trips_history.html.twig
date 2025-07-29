@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historique de mes trajets{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Historique de mes trajets</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Trajets en tant que conducteur</h2>
+            {% if driverTrips %}
+                <ul class="list-group">
+                    {% for trip in driverTrips %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{{ path('app_trip_show', {'id': trip.id}) }}">{{ trip.departureLocation }} &rarr; {{ trip.destinationLocation }}</a>
+                                <br>
+                                <small>{{ trip.departureTime|date('d/m/Y H:i') }}</small>
+                            </div>
+                            {% if trip.departureTime > "now"|date('Y-m-d H:i:s') and trip.status != 'cancelled' %}
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#cancelTripModal{{ trip.id }}">Annuler le trajet</button>
+
+                                <!-- Modal de confirmation d'annulation de trajet -->
+                                <div class="modal fade" id="cancelTripModal{{ trip.id }}" tabindex="-1" aria-labelledby="cancelTripModalLabel{{ trip.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="cancelTripModalLabel{{ trip.id }}">Confirmer l'annulation du trajet</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Êtes-vous sûr de vouloir annuler le trajet suivant ?</p>
+                                                <p><strong>{{ trip.departureLocation }} &rarr; {{ trip.destinationLocation }}</strong></p>
+                                                <p><strong>Date de départ :</strong> {{ trip.departureTime|date('d/m/Y H:i') }}</p>
+                                                <p class="text-danger">Cette action est irréversible et notifiera tous les passagers.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                <form action="{{ path('app_trip_cancel', {'id': trip.id}) }}" method="post">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ trip.id) }}">
+                                                    <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Vous n'avez proposé aucun trajet.</p>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h2>Trajets en tant que passager</h2>
+            {% if passengerBookings %}
+                <ul class="list-group">
+                    {% for booking in passengerBookings %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="{{ path('app_trip_show', {'id': booking.trip.id}) }}">{{ booking.trip.departureLocation }} &rarr; {{ booking.trip.destinationLocation }}</a>
+                                <br>
+                                <small>{{ booking.trip.departureTime|date('d/m/Y H:i') }}</small>
+                            </div>
+                            {% if booking.trip.departureTime > "now"|date('Y-m-d H:i:s') and booking.status == 'confirmed' %}
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelBookingModal{{ booking.id }}">Annuler</button>
+
+                                <!-- Modal de confirmation d'annulation -->
+                                <div class="modal fade" id="cancelBookingModal{{ booking.id }}" tabindex="-1" aria-labelledby="cancelBookingModalLabel{{ booking.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="cancelBookingModalLabel{{ booking.id }}">Confirmer l'annulation</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Êtes-vous sûr de vouloir annuler cette réservation pour le trajet :
+                                                <strong>{{ booking.trip.departureLocation }} &rarr; {{ booking.trip.destinationLocation }}</strong>
+                                                prévu le {{ booking.trip.departureTime|date('d/m/Y H:i') }} ?
+                                                <p class="mt-2">Cette action est irréversible.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                <form action="{{ path('app_booking_cancel', {'id': booking.id}) }}" method="post">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
+                                                    <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Vous n'avez participé à aucun trajet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes crédits{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Mes crédits</h1>
+
+    <div class="card text-center">
+        <div class="card-header">
+            Solde actuel
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">{{ app.user.credits }} crédits</h2>
+            <p class="card-text">Utilisez vos crédits pour réserver des trajets ou achetez-en plus pour vos futurs voyages.</p>
+            <a href="#" class="btn btn-success">Acheter des crédits</a>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h2 class="text-center mb-4">Historique des transactions</h2>
+        <p class="text-center text-muted">Cette fonctionnalité sera bientôt disponible.</p>
+        {# Ici, vous pourrez ajouter une liste des transactions de crédits #}
+    </div>
+</div>
+{% endblock %}

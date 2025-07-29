@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\TripRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
 use App\Entity\Vehicle;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 class Trip
@@ -15,6 +18,14 @@ class Trip
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTime $createdAt = null;
+
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTime $updatedAt = null;
 
     #[ORM\Column(length: 255)]
     private ?string $departureLocation = null;
@@ -54,9 +65,15 @@ class Trip
     #[ORM\JoinColumn(nullable: true)]
     private ?Vehicle $vehicle = null;
 
+    #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'trip')]
+    private Collection $bookings;
+
     public function __construct()
     {
         $this->status = 'scheduled';
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+        $this->bookings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -206,5 +223,68 @@ class Trip
         $this->vehicle = $vehicle;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): static
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setTrip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): static
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getTrip() === $this) {
+                $booking->setTrip(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRemainingSeats(): int
+    {
+        $bookedSeats = 0;
+        foreach ($this->bookings as $booking) {
+            $bookedSeats += $booking->getSeats();
+        }
+        return $this->availableSeats - $bookedSeats;
     }
 }

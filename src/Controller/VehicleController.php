@@ -52,7 +52,7 @@ final class VehicleController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Vehicle $vehicle, EntityManagerInterface $entityManager): Response
     {
-        if ($vehicle->getUser() !== $this->getUser()) {
+        if ($vehicle->getOwner() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à modifier ce véhicule.');
         }
         
@@ -78,7 +78,7 @@ final class VehicleController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function delete(Request $request, Vehicle $vehicle, EntityManagerInterface $entityManagerInterface): Response
     {
-        if ($vehicle->getUser() !== $this->getUser()) {
+        if ($vehicle->getOwner() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à supprimer ce véhicule.');
         }
 

@@ -51,6 +51,7 @@ class VehicleType extends AbstractType
                 'label' => 'Véhicule électrique ?',
                 'required' => false,
             ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

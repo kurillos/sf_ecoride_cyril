@@ -60,11 +60,11 @@ class TripType extends AbstractType
             ])
             ->add('isSmokingAllowed', CheckboxType::class, [
                 'label' => 'Fumeur autorisé ?',
-                'required' => true,
+                'required' => false,
             ])
             ->add('areAnimalsAllowed', CheckboxType::class, [
                 'label' => 'Animaux autorisés ?',
-                'required' => true,
+                'required' => false,
             ])
             ->add('status')
             ->add('driver', EntityType::class, [

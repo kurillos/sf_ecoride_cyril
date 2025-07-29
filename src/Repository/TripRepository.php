@@ -31,7 +31,6 @@ class TripRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Trip
     //    {
     //        return $this->createQueryBuilder('t')
     //            ->andWhere('t.exampleField = :val')
@@ -40,4 +39,26 @@ class TripRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findBySearchCriteria(?string $departure, ?string $destination, ?string $date): array
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        if ($departure) {
+            $qb->andWhere('t.departureLocation LIKE :departure')
+                ->setParameter('departure', '%' . $departure . '%');
+        }
+
+        if ($destination) {
+            $qb->andWhere('t.destinationLocation LIKE :destination')
+                ->setParameter('destination', '%' . $destination . '%');
+        }
+
+        if ($date) {
+            $dateObject = new \DateTime($date);
+            $qb->andWhere('t.departureTime >= :date')
+                ->setParameter('date', $dateObject->format('Y-m-d 00:00:00'));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
