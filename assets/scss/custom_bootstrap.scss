@@ -126,3 +126,60 @@ img {
 .was-validated .form-check-input:invalid ~ .invalid-feedback {
     display: block;
 }
+
+.noUi-connect {
+    background: $primary;
+}
+
+.noUi-horizontal .noUi-handle {
+    background: $primary;
+    border: 1px solid darken($primary, 10%);
+    border-radius: 100%;
+    cursor: grab;
+    box-shadow: none;
+    width: 20px;
+    height: 20px;
+    right: -10px;
+    top: -5px;
+
+    &::before, &::after {
+        display: none;
+    }
+}
+
+.noUi-pips {
+    color: $ecoride-black;
+    font-size: 0.8em;
+}
+
+.price-field,
+.duration-field {
+    width: 90px;
+    text-align: center;
+    font-size: 0.95rem;
+    padding: 0.375rem 0.5rem;
+}
+
+.star-rating {
+    display: inline-block;
+    font-size: 1.5rem;
+    color: #ccc;
+    cursor: pointer;
+    line-height: 1;
+    position: relative; 
+    z-index: 10;
+    
+    .star {
+        margin-right: 2px;
+        transition: color 0.2s ease-in-out;
+    }
+
+    .star.bi-star-fill {
+        color: $ecoride-green !important;
+    }
+
+    .star:hover,
+    .star:hover ~ .star {
+        color: lighten($ecoride-green, 15%);
+    }
+}

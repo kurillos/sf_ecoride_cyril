@@ -4,6 +4,50 @@
     <div class="container mt-5">
         <h1>Résultats de la recherche</h1>
 
+        <div class="row align-items-end mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="electricVehicle" name="electricVheicle">
+                    <label for="electricVehicle" class="form-check-label">Véhicule écologique :</label>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6 mb-3">
+                <label class="form-label" for="minPrice">Prix :</label>
+                <div class="d-flex align-items-center mb-2">
+                    <input type="number" id="minPrice" value="0" min="0" max="500" class="form-control price-field">
+                    <span>€ - </span>
+                    <input type="text" id="maxPrice" value="500" min="0" max="500" class="form-control price-field">
+                    <span>€</span>
+                </div>
+                <div id="priceSlider" class="mt-2 mb-3"></div>
+            </div>
+
+            <div class="col-md-4 col-sm-6 mb-3">
+                <label class="form-label" for="minDuration">Durée du trajet (heures) :</label>
+                <div class="d-flex align-items-center mb-2">
+                    <input type="number" id="minDuration" value="0" min="0" max="24" class="form-control duration-field">
+                    <span>h - </span>
+                    <input type="number" id="maxDuration" value="24" min="0" max="24" class="form-control duration-field">
+                    <span>h</span>
+                </div>
+                <div id="durationSlider" class="mt-2 mb-3"></div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 mb-3">
+                <label class="form-label">Note minimal du chauffeur :</label>
+                <div id="ratingStars" class="star-rating">
+                </div>
+                <input type="hidden" id="minRating" value="0">
+            </div>
+
+            <div class="col-12 text-end">
+                <button type="submit" class="btn btn-primary m-3">Appliquer les filtres</button>
+            </div>
+        </div>
+    </div>
+
+
         {% if trips %}
             <div class="row">
                 {% for trip in trips %}
