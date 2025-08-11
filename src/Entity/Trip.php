@@ -287,4 +287,13 @@ class Trip
         }
         return $this->availableSeats - $bookedSeats;
     }
+
+    public function getPassengers(): Collection
+    {
+        $passengers = new ArrayCollection();
+        foreach ($this->bookings as $booking) {
+            $passengers->add($booking->getUser());
+        }
+        return $passengers;
+    }
 }

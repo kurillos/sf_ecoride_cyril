@@ -137,4 +137,5 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNoUiSliderFilter('priceSlider', 'minPrice', 'maxPrice', 0, 500, '€');
     setupNoUiSliderFilter('durationSlider', 'minDuration', 'maxDuration', 0, 24, 'h');
     setupStarRating('ratingStars', 'minRating', 5);
+    setupStarRating('ratingStarsForDriver', 'minRatingForDriver', 5);
 });

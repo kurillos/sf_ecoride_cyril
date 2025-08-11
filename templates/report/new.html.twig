@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Signaler un trajet{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Signaler le trajet de {{ trip.departure|date('d/m/Y') }}</h1>
+        <div class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-lg">
+            <p class="mb-4 text-gray-600">Signaler un probléme concernant le trajet <strong>{{ trip.driver.firstName }}</strong>, partant de <strong>{{ trip.departure }}</strong> à <strong>{{ trip.destination }}</strong>.</p>
+            <p class="mb-6 text-gray-600">Dédcrivez le probléme de manière précise ci-dessous. Notre équipe traitera votre demande dans les plus brefs délais.</p>
+
+            {{ form_start(reportForm, {'attr': {'class': 'space-y-4'}}) }}
+                <div>
+                    {{ form_row(reportForm.reason) }}
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="bg-red-500 hoveer:bg-rd-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out shadow-lg transform hover:scale-105">
+                        Signaler le trajet
+                    </button>                
+                </div>
+            {{ form_end(reportForm) }}
+        </div>
+    </div>
+{% endblock %   }

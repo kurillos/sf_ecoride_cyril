@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Noter le chauffeur{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4">Noter le chauffeur : {{ userToRate.firstname }}</h1>
+        <p>Trajet de {{ trip.departureLocation }} à {{ trip.destinationLocation }}</p>
+
+        {{ form_start(form) }}
+        <div class="card mt-3 p-4">
+            <div class="card-body">
+                <div class="form_group mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Votre note :</label>
+                    <div id="ratingStarsForDriver" class="star-rating"></div>
+
+                    <input type="hidden" id="minRatingForDriver" name="rating_value" value="{{ form.rating.vars.value|default(0) }}">
+
+                </div>
+
+                {{ form_row(form.comment)}}
+                {{ form_rest(form) }}
+            </div>
+            <button type="submit" class="btn btn-success mt-3">Envoyer la note</button>
+        </div>
+        {{ form_end(form) }}
+
+        <a href="{{ path('app_trip_show', {'id': trip.id}) }}" class="btn btn-danger mt-3">Annuler</a>
+    </div>
+{% endblock %}

@@ -22,11 +22,16 @@ class Booking
     #[ORM\Column]
     private ?\DateTimeImmutable $bookedAt = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[ORM\Column(length: 255, options:['default' => 'pending_validation'])]
+    private ?string $status = 'pending_validation';
 
     #[ORM\Column]
     private ?int $seats = null;
+
+    public function __construct()
+    {
+        $this->status = 'pending_validation';
+    }
 
     public function getId(): ?int
     {
