@@ -60,7 +60,7 @@ class ReportController extends AbstractController
         }
 
         return $this->render('report/new.html.twig', [
-            'reportForm' => $form->createView(),
+            'form' => $form->createView(),
             'trip' => $trip,
         ]);
     }

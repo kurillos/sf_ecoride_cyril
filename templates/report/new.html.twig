@@ -3,46 +3,57 @@
 {% block title %}Signaler un trajet{% endblock %}
 
 {% block body %}
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Signaler le trajet de {{ trip.departure|date('d/m/Y') }}</h1>
-        <div class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-lg">
-            <p class="mb-4 text-gray-600">Signaler un probléme concernant le trajet <strong>{{ trip.driver.firstName }}</strong>, partant de <strong>{{ trip.departure }}</strong> à <strong>{{ trip.destination }}</strong>.</p>
-            <p class="mb-6 text-gray-600">Dédcrivez le probléme de manière précise ci-dessous. Notre équipe traitera votre demande dans les plus brefs délais.</p>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="text-center mb-4 text-dark">Signaler le trajet de {{ trip.departureLocation }}</h1>
+                <div class="card p-4 shadow-lg rounded-3">
+                    <div class="card-body">
+                        <p class="mb-3 text-secondary">
+                            Signaler un problème concernant le trajet de <strong>{{ trip.driver.firstName }}</strong>, partant de <strong>{{ trip.departureLocation }}</strong> à <strong>{{ trip.destinationLocation }}</strong>.
+                        </p>
+                        <p class="mb-4 text-secondary">
+                            Décrivez le problème de manière précise ci-dessous. Notre équipe traitera votre demande dans les plus brefs délais.
+                        </p>
 
-            {{ form_start(reportForm, {'attr': {'class': 'space-y-4'}}) }}
-                <div class="mb-3">
-                    <p>Afin de pouvoir vous contacter si besoin, veuillez nous laisser vos coordonnées.</p>
-                    {{ form_row(form.contactEmail) }}
-                    {{ form_row(form.contactPhone) }}
-                </div>
-                <div>
-                    {{ form_row(reportForm.reason, {'label': 'Decrivez le problème rencontré ici.'}) }}
-                </div>
-                <div class="flex justify-center">
-                    <button type="submit" class="bg-red-500 hoveer:bg-rd-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out shadow-lg transform hover:scale-105">
-                        Signaler le trajet
-                    </button>                
-                </div>
-            {{ form_end(reportForm) }}
-        </div>
-
-        <div class="modal fade" id="confirmSubmitModal" tabIndex="-1" aria-labelledBy="confirmSubmitModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmSubmitModalLabel">Confirmez le signalement.</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Êtes-vous sûr de vouloir envoyer le signalement ?</p>
-                        <p>Le signalement sera transmis à l'équipe de modération pour être examiné.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" form="{{ form.vars.id }}" class="btn btn-danger">Confirmer l'envoi</button>
+                        
+                        {{ form_start(form, {'attr': {'id': 'reportForm'}}) }}
+                            <div class="mb-3">
+                                <p>Afin de pouvoir vous contacter si besoin, veuillez nous laisser vos coordonnées.</p>
+                                {{ form_row(form.contactEmail) }}
+                                {{ form_row(form.contactPhone) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_row(form.reason, {'label': 'Décrivez le problème rencontré ici.'}) }}
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-danger btn-lg rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#confirmSubmitModal">
+                                    Signaler le trajet
+                                </button>
+                            </div>
+                        {{ form_end(form) }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %   }
+
+    <div class="modal fade" id="confirmSubmitModal" tabindex="-1" aria-labelledby="confirmSubmitModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmSubmitModalLabel">Confirmez le signalement.</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Êtes-vous sûr de vouloir envoyer le signalement ?</p>
+                    <p>Le signalement sera transmis à l'équipe de modération pour être examiné.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" form="reportForm" class="btn btn-danger">Confirmer l'envoi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
