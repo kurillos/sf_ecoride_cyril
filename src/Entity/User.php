@@ -94,6 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'ratingUser', targetEntity: Rating::class, orphanRemoval: true)]
     private Collection $ratingsGiven;
 
+
     public function __construct()
     {
         $this->vehicles = new ArrayCollection();
@@ -217,23 +218,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getProfilePictureFile(): ?File
-    {
-        return $this->profilePictureFile;
-    }
-
-    /**
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
-     */
-    public function setProfilePictureFile(?File $profilePictureFile = null): void
-    {
-        $this->profilePictureFile = $profilePictureFile;
-
-        if (null !== $profilePictureFile) {
-            $this->updatedAt = new \DateTimeImmutable();
-        }
-    }
-
     public function getProfilePictureFilename(): ?string
     {
         return $this->profilePictureFilename;
@@ -242,6 +226,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilePictureFilename(?string $profilePictureFilename): self
     {
         $this->profilePictureFilename = $profilePictureFilename;
+        return $this;
+    }
+
+    public function getProfilePictureFile(): ?File
+    {
+        return $this->profilePictureFile;
+    }
+
+    public function setProfilePictureFile(?File $profilePictureFile): self
+    {
+        $this->profilePictureFile = $profilePictureFile;
+
+        if ($profilePictureFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
         return $this;
     }
 
@@ -416,5 +416,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'roles' => $this->roles,
+            'password' => $this->password,
+            'credits' => $this->credits,
+            'firstName' => $this->firstName,
+            'lastName' => $this->lastName,
+            'pseudo' => $this->pseudo,
+            'updatedAt' => $this->updatedAt,
+            'profilePictureFilename' => $this->profilePictureFilename,
+            'desiredRole' => $this->desiredRole,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->id = $data['id'];
+        $this->email = $data['email'];
+        $this->roles = $data['roles'];
+        $this->password = $data['password'];
+        $this->credits = $data['credits'];
+        $this->firstName = $data['firstName'];
+        $this->lastName = $data['lastName'];
+        $this->pseudo = $data['pseudo'];
+        $this->updatedAt = $data['updatedAt'];
+        $this->profilePictureFilename = $data['profilePictureFilename'];
+        $this->desiredRole = $data['desiredRole'];
+
+        $this->vehicles = new ArrayCollection();
+        $this->tripAsDriver = new ArrayCollection();
+        $this->ratingsReceived = new ArrayCollection();
+        $this->ratingsGiven = new ArrayCollection();
+        
+        $this->profilePictureFile = null;
     }
 }

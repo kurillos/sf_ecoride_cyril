@@ -6,6 +6,8 @@ use App\Entity\Booking;
 use App\Entity\Trip;
 use App\Entity\User;
 use App\Entity\Rating;
+use App\Entity\Report;
+use App\Form\ReportType;
 use App\Form\TripType;
 use App\Form\RatingType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -379,26 +381,43 @@ final class TripController extends AbstractController
             ]);
     }
 
-    #[Route('/trip/report/{id}/{user_id}', name:'app_trip_report')]
-    public function report(Trip $trip, User $user, EntityManagerInterface $entityManager): Response
+    #[Route('/trip/report/{tripId}/{userId}', name:'app_trip_report', methods: ['GET', 'POST'])]
+    public function report(Request $request, Trip $tripId, User $userId, EntityManagerInterface $entityManager, Security $security): Response
     {
-        if ($this->getUser() !== $user) {
-            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à signaler ce trajet.');
+        $user = $security->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour signaler un trajet.');
         }
 
-        $booking = $entityManager->getRepository(Booking::class)->findOneBy([
-            'trip' => $trip,
-            'user' => $user,
-        ]);
+        $report = new Report();
+        $report->setReportedTrip($tripId);
+        $report->setReporter($user);
+        $report->setReportedUser($userId);
 
-        if (!$booking) {
-            throw $this->createNotFoundException('Réservation non trouvée pour ce trajet et cet utilisateur.');
+        $form = $this->createForm(ReportType::class, $report);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($report);
+            $booking = $entityManager->getRepository(Booking::class)->findOneBy([
+                'trip' => $tripId,
+                'user' => $user,
+            ]);
+
+            if ($booking) {
+            $booking->setStatus('reported');
+            }
+
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Votre signalement a été pris en compte. Un employé va traiter votre signalement dans les plus brefs délais.');
+            return $this->redirectToRoute('app_home');
         }
 
-        $booking->setStatus('reported');
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Votre signalement a été pris en compte. Un employé va traiter votre signalement dans les plus brefs délais.');
-        return $this->redirectToRoute('app_home');
+        return $this->render('report/new.html.twig', [
+        'form' => $form->createView(),
+        'trip' => $tripId,
+        'userToReport' => $userId,
+    ]);
     }
 }
