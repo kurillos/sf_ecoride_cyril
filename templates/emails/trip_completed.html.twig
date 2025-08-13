@@ -1,0 +1,15 @@
+<h1>Votre covoiturage est terminé !</h1>
+
+<p>Le covoiturage de {{ trip.departureLocation }} à {{ trip.destinationLocation }} avec {{ trip.driver.pseudo }} est terminé.</p>
+
+<p>Veuillez valider que tout s'est bien passé afin que le chauffeur soit crédité :</p>
+
+<a href="{{ url('app_trip_validate_good', {'trip': trip.id, 'userToRate': trip.driver.id}) }}" style="background-color: #28a745; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Covoiturage bien passé</a>
+
+<p>Sinon, signaler nous le problème ici, un modérateur examinera votre situation :</p>
+
+<a href="{{ url('app_trip_report', {'tripId': trip.id, 'userId': participant.id}) }}" style="background-color: #dc3545; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Signaler un problème</a>
+
+<p>Merci d'avance,</p>
+
+<p>A bientôt avec EcoRide !</p>

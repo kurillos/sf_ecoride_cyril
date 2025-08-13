@@ -12,6 +12,7 @@ $ecoride-green: #4CAF50;
 $ecoride-light-gray: #f8f9fa;
 $primary: #2196F3;
 $success: #4CAF50;
+$danger: #dc3545;
 $bg-light: #D8D5D5;
 $bg-dark: #949292;
 
@@ -22,7 +23,8 @@ $theme-colors: map-merge(
         "ecoride-primary": $primary,
         "ecoride-success": $success,
         "grey-light": $bg-light,
-        "grey-dark": $bg-dark
+        "grey-dark": $bg-dark,
+        "danger": $danger
     )
 );
 
@@ -161,25 +163,26 @@ img {
 }
 
 .star-rating {
-    display: inline-block;
-    font-size: 1.5rem;
-    color: #ccc;
-    cursor: pointer;
-    line-height: 1;
-    position: relative; 
-    z-index: 10;
-    
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+
     .star {
-        margin-right: 2px;
-        transition: color 0.2s ease-in-out;
-    }
+        font-size:2rem;
+        cursor: pointer;
+        padding: 0 0.25rem;
+        transition: color 0.2s;
 
-    .star.bi-star-fill {
-        color: $ecoride-green !important;
-    }
+        &.bi-star {
+            color: #ccc;
+        }
 
-    .star:hover,
-    .star:hover ~ .star {
-        color: lighten($ecoride-green, 15%);
+        &.bi-star-fill {
+            color: $ecoride-green;
+        }
+
+        &.form-check {
+            padding-left: 0;
+        }
     }
-}
+}   

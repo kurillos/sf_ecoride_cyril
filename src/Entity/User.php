@@ -94,6 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'ratingUser', targetEntity: Rating::class, orphanRemoval: true)]
     private Collection $ratingsGiven;
 
+
     public function __construct()
     {
         $this->vehicles = new ArrayCollection();
@@ -217,23 +218,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getProfilePictureFile(): ?File
-    {
-        return $this->profilePictureFile;
-    }
-
-    /**
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
-     */
-    public function setProfilePictureFile(?File $profilePictureFile = null): void
-    {
-        $this->profilePictureFile = $profilePictureFile;
-
-        if (null !== $profilePictureFile) {
-            $this->updatedAt = new \DateTimeImmutable();
-        }
-    }
-
     public function getProfilePictureFilename(): ?string
     {
         return $this->profilePictureFilename;
@@ -242,6 +226,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilePictureFilename(?string $profilePictureFilename): self
     {
         $this->profilePictureFilename = $profilePictureFilename;
+        return $this;
+    }
+
+    public function getProfilePictureFile(): ?File
+    {
+        return $this->profilePictureFile;
+    }
+
+    public function setProfilePictureFile(?File $profilePictureFile): self
+    {
+        $this->profilePictureFile = $profilePictureFile;
+
+        if ($profilePictureFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
         return $this;
     }
 
