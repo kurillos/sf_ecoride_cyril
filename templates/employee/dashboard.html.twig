@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Employé{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <h1 class="text-center mb-4 text-ecoride">Tableau de bord Employé</h1>
+        <p class="text-center text-secondary mb-5">Bienvenue dans votre espace de gestion. Vous pouvez gérer les avis et les signalements en attente.</p>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm h-100 border-warning">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0">Avis en attente de validation</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if pendingReviews is empty %}
+                            <p class="text-center text-muted">Aucun avis en attente pour le moment.</p>
+                        {% else %}
+                            {% for review in pendingReviews %}
+                                <div class="alert alert-light border-bottom mb-3" role="alert">
+                                    <p><strong>Avis de {{ review.reviewer.firstName }} sur {{ review.ratedDriver.firstName }}</strong></p>
+                                    <p>"{{ review.comment }}"</p>
+                                    <p><small class="text-muted">Note : {{ review.rating }} / 5</small></p>
+                                    <div class="d-flex justify-content-end">
+                                        <a href="#" class="btn btn-sm btn-success me-2">Valider</a>
+                                        <a href="#" class="btn btn-sm btn-danger">Refuser</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm h-100 border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">Signalement en cours</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if pendingReports is empty %}
+                            <p class="text-center text-muted">Aucun signalement en cours pour le moment.</p>
+                        {% else %}
+                            {% for report in pendingReports %}
+                                <div class="alert alert-light border-bottom mb-3" role="alert">
+                                    <p><strong>Signalement n° {{ report.id }}</strong></p>
+                                    <p>Motif : {{ report.reason }}</p>
+                                    <p class="text-muted">Trajet : {{ report.reportedTrip.departureLocation }} &rarr; {{ report.reportedTrip.destinationLocation }}</p>
+                                    <div class="d-flex justify-content-end">
+                                        <button class="btn btn-sm btn-info me-2 text-white"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#reportModal"
+                                                data-report-id="{{ report.id }}"
+                                                data-trip-id="{{ report.reportedTrip.id }}"
+                                        >
+                                            S'approprier
+                                        </button>
+                                        <button class="btn btn-sm btn-info me-2 text-white"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#viewReportModal"
+                                                data-report-id="{{ report.id }}"
+                                                data-trip-id="{{ report.reportedTrip.id }}"
+                                        >
+                                            Voir
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Traiter le signalement #<span id="modal-report-id"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <h4 class="text-secondary mb-2">Détails du trajet</h4>
+                        <div class="row">
+                            <div class="col-md-6"><p><strong>Départ :</strong><span id="modal-departure-location"></span></p></div>
+                            <div class="col-md-6"><p><strong>Arrivée :</strong><span id="modal-arrival-location"></span></p></div>
+                            <div class="col-md-6"><p><strong>Date :</strong></p><span id="modal-trip-date"></span></div>
+                            <div class="col-md-6"><p><strong>Heure :</strong><span id="modal-trip-time"></span></p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-secondary mb-2">Participants</h4>
+                    <div class="bg-light p-3 rounded">
+                        <p><strong>Chauffeur :</strong><span id="modal-driver-name"></span></p>
+                        <div id="modal-passengers">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="text-secondary mb-2">Message du signalement</h4>
+                    <p id="modal-report-message" class="alert alert-danger"></p>
+                </div>
+
+                <h4 class="text-secondary mb-3">Actions de sanction</h4>
+                <form id="sanction-form">
+                    <div class="mb-3">
+                        <label for="sanction-type" class="form-label">Type de sanction :</label>
+                        <select name="sanction-type" id="sanction-type" class="form-select">
+                            <option value="none">Aucune sanction</option>
+                            <option value="warning">Avertissement</option>
+                            <option value="temporary-ban">Bannissement temporaire (7 jours)</option>
+                            <option value="permanent-ban">Bannissement définitif</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sanction-comment" class="form-label">Commentaire (pour l'historique) :</label>
+                        <textarea name="sanction-comment" id="sanction comment" rows="4" class="form-control"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-success">Appliquer la sanction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewReportModal" tabindex="-1" aria-labelledby="viewReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewReportModalLabel">Détails du signalement <span id="modal-view-report-id"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Trajet</h6>
+                    <p>Départ : <strong id="modal-view-departure-location"></strong></p>
+                    <p>Arrivée : <strong id="modal-view-arrival-location"></strong></p>
+                    <p>Date : <strong id="modal-view-trip-date"></strong> à <strong id="modal-view-trip-time"></strong></p>
+                    <p>Conducteur : <strong id="modal-view-driver-name"></strong></p>
+                    <div id="modal-view-passengers"></div>
+                    <hr>
+                    <h6>Motif du signalement</h6>
+                    <p id="modal-view-report-message"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="{{ asset('js/report_modal.js') }}"></script>
+{% endblock %}

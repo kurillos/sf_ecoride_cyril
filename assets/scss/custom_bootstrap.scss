@@ -185,4 +185,16 @@ img {
             padding-left: 0;
         }
     }
-}   
+}
+
+.modal-overlay {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3, visibility 0s 0.3s;
+}
+
+.modal-overlay.active {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s;
+}

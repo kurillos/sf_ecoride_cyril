@@ -57,7 +57,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_signup') }}">Inscription</a>
                     </li>
-                {% endif %}  
+                {% endif %}
+                {% if is_granted('ROLE_EMPLOYEE') %}
+                    <a href="{{ path('app_employee') }}" class="nav-link">Tableau de bord employé</a>
+                {% endif %}
             </ul>
         </div>
     </div>
