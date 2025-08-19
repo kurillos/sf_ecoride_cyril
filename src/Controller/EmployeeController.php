@@ -2,6 +2,11 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Entity\Report;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+
 use App\Repository\ReportRepository;
 use App\Repository\ReviewRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,5 +47,65 @@ class EmployeeController extends AbstractController
         $reviewRepository->save($review, true);
 
         return $this->json(['status' => 'success', 'message' => 'Avis mis à jour.']);
+    }
+
+    #[Route('/employee/report/{id}', name: 'app_employee_report_details', methods: ['GET'])]
+    public function getReportDetails(int $id, ReportRepository $reportRepository): JsonResponse
+    {
+        $report = $reportRepository->find($id);
+
+        if (!$report) {
+            return $this->json(['message' => 'Signalement non trouvé.'], Response::HTTP_NOT_FOUND);
+        }
+
+        $trip = $report->getReportedTrip();
+        $driver = $trip->getDriver();
+        $passengers = $trip->getPassengers();
+
+        $passengersData = [];
+        foreach ($passengers as $passenger) {
+            $passengersData[] = [
+                'firstName' => $passenger->getFirstName(),
+            ];
+        }
+
+        $data = [
+            'reportedTrip' => [
+                'departureLocation' => $trip->getDepartureLocation(),
+                'destinationLocation' => $trip->getDestinationLocation(),
+                'tripDate' => $trip->getTripDate()->format('Y-m-d'),
+                'tripTime' => $trip->getTripDate()->format('H:i:s'),
+                'driver' => [
+                    'firstName' => $driver->getFirstName(),
+                ],
+                'passengers' => $passengersData,
+            ],
+            'reason' => $report->getReason(),
+        ];
+
+        return $this->json($data);
+    }
+
+    #[Route('/employee/sanction/{id}', name: 'app_employee_sanction', methods: ['POST'])]
+    public function sanctionUser(int $id, Request $request, ReportRepository $reportRepository, EntityManagerInterface $em): JsonResponse
+    {
+        $report = $reportRepository->find($id);
+
+        if (!$report) {
+            return $this->json(['message' => 'Signalement non trouvé.'], Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $sanctionType = $data['type'] ?? 'none';
+        $sanctionComment = $data['comment'] ?? '';
+
+        // Here you would have the logic to apply the sanction to the user
+        // For example, you could create a new Sanction entity and persist it.
+        // You could also send an email to the user.
+
+        $report->setStatus('processed');
+        $em->flush();
+
+        return $this->json(['message' => 'La sanction a été appliquée avec succès.']);
     }
 }
