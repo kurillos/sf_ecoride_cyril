@@ -87,20 +87,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'driver', targetEntity: Trip::class)]
     private Collection $tripAsDriver;
 
-    #[ORM\OneToMany(mappedBy: 'ratedUser', targetEntity: Rating::class, orphanRemoval: true)]
-    private Collection $ratingsReceived;
-
-    #[ORM\OneToMany(mappedBy: 'ratingUser', targetEntity: Rating::class, orphanRemoval: true)]
-    private Collection $ratingsGiven;
-
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class)]
-    private Collection $reviews;
+    private Collection $reviewsGiven;
 
     /**
      * @var Collection<int, Review>
      */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'ratedDriver')]
-    private Collection $review;
+    private Collection $reviewsReceived;
 
 
     public function __construct()
@@ -109,9 +103,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->vehicles = new ArrayCollection();
         $this->tripAsDriver = new ArrayCollection();
         $this->updatedAt = new \DateTimeImmutable();
-        $this->ratingsReceived = new ArrayCollection();
-        $this->ratingsGiven = new ArrayCollection();
-        $this->review = new ArrayCollection();
+        $this->reviewsGiven = new ArrayCollection();
+        $this->reviewsReceived = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -352,104 +345,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAverageRating(): ?float
-    {
-        $ratings = $this->getRatingsReceived();
-        if ($ratings->isEmpty()) {
-            return null;
-        }
-
-        $total = 0;
-        foreach ($ratings as $rating) {
-            $total += $rating->getRating();
-        }
-
-        return $total / count($ratings);
-    }
-
-    /**
-     * @return Collection<int, Rating>
-     */
-    public function getRatingsReceived(): Collection
-    {
-        return $this->ratingsReceived;
-    }
-
-    public function addRatingsReceived(Rating $ratingsReceived): static
-    {
-        if (!$this->ratingsReceived->contains($ratingsReceived)) {
-            $this->ratingsReceived->add($ratingsReceived);
-            $ratingsReceived->setRatedUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRatingsReceived(Rating $ratingsReceived): static
-    {
-        if ($this->ratingsReceived->removeElement($ratingsReceived)) {
-            // set the owning side to null (unless already changed)
-            if ($ratingsReceived->getRatedUser() === $this) {
-                $ratingsReceived->setRatedUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Rating>
-     */
-    public function getRatingsGiven(): Collection
-    {
-        return $this->ratingsGiven;
-    }
-
-    public function addRatingsGiven(Rating $ratingsGiven): static
-    {
-        if (!$this->ratingsGiven->contains($ratingsGiven)) {
-            $this->ratingsGiven->add($ratingsGiven);
-            $ratingsGiven->setRatingUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRatingsGiven(Rating $ratingsGiven): static
-    {
-        if ($this->ratingsGiven->removeElement($ratingsGiven)) {
-            // set the owning side to null (unless already changed)
-            if ($ratingsGiven->getRatingUser() === $this) {
-                $ratingsGiven->setRatingUser(null);
-            }
-        }
-
-        return $this;
-    }
+    
 
     public function __sleep()
     {
         return array_diff(array_keys(get_object_vars($this)), ['profilePictureFile']);
     }
 
-    public function getReviews(): Collection
+    public function getAverageRating(): ?float
     {
-        return $this->reviews;
+        $reviews = $this->getReviewsReceived()->filter(fn(Review $review) => $review->getStatus() === 'approved');
+
+        if ($reviews->isEmpty()) {
+            return null;
+        }
+
+        $total = 0;
+        foreach ($reviews as $review) {
+            $total += $review->getRating();
+        }
+
+        return $total / $reviews->count();
     }
 
-    public function addReview(Review $review): static
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviewsGiven(): Collection
     {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setUser($this);
+        return $this->reviewsGiven;
+    }
+
+    public function addReviewGiven(Review $review): static
+    {
+        if (!$this->reviewsGiven->contains($review)) {
+            $this->reviewsGiven->add($review);
+            $review->setUser($this); 
         }
 
         return $this;
     }
 
-    public function removeReview(Review $review): static
+    public function removeReviewGiven(Review $review): static
     {
-        if ($this->reviews->removeElement($review)) {
+        if ($this->reviewsGiven->removeElement($review)) {
             if ($review->getUser() === $this) {
                 $review->setUser(null);
             }
@@ -461,8 +400,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Review>
      */
-    public function getReview(): Collection
+    public function getReviewsReceived(): Collection
     {
-        return $this->review;
+        return $this->reviewsReceived;
+    }
+
+    public function addReviewReceived(Review $review): static
+    {
+        if (!$this->reviewsReceived->contains($review)) {
+            $this->reviewsReceived->add($review);
+            $review->setRatedDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReviewReceived(Review $review): static
+    {
+        if ($this->reviewsReceived->removeElement($review)) {
+            if ($review->getRatedDriver() === $this) {
+                $review->setRatedDriver(null);
+            }
+        }
+
+        return $this;
     }
 }

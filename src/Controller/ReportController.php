@@ -4,17 +4,26 @@ namespace App\Controller;
 
 use App\Entity\Report;
 use App\Entity\Trip;
+use App\Repository\ReportRepository;
 use App\Form\ReportType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
-Use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ReportController extends AbstractController
 {
+    private ReportRepository $reportRepository;
+
+    public function __construct(ReportRepository $reportRepository)
+    {
+        $this->reportRepository = $reportRepository;
+    }
+
     #[Route('/trip/{id}/report', name: 'app_report_trip', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Trip $trip, Request $request, EntityManagerInterface $em, Security $security): Response
@@ -64,4 +73,42 @@ class ReportController extends AbstractController
             'trip' => $trip,
         ]);
     }
+    
+    #[Route('/employee/report/{id}', name: 'app_employee_report_details', methods: ['GET'])]
+    public function getReportDetails(Report $report): JsonResponse
+    {   
+        if (!$report) {
+            return $this->json(['message' => 'Le signalement n\'existe pas.'], Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $reportedTrip = $report->getReportedTrip();
+            $driver = $reportedTrip->getDriver();
+            $passengers = $reportedTrip->getPassengers();
+
+            return $this->json([
+            'id' => $report->getId(),
+            'reason' => $report->getReason(),
+            'reportedTrip' => [
+                'id' => $reportedTrip->getId(),
+                'departureLocation' => $reportedTrip->getDepartureLocation(),
+                'destinationLocation' => $reportedTrip->getDestinationLocation(),
+                'tripDate' => $reportedTrip->getDepartureTime()->format('Y-m-d'),
+                'tripTime' => $reportedTrip->getDepartureTime()->format('H:i'),
+                'driver' => [
+                    'id' => $driver->getId(),
+                    'firstName' => $driver->getFirstName(),
+                ],
+                'passengers' => array_map(function($passenger) {
+                    return [
+                        'id' => $passenger->getId(),
+                        'firstName' => $passenger->getFirstName(),
+                    ];
+                }, $passengers->toArray())
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return $this->json(['message' => 'Erreur lors de la récupération des détails du signalement.', 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+}
 }

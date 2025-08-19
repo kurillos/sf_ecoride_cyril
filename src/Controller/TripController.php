@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Booking;
 use App\Entity\Trip;
 use App\Entity\User;
-use App\Entity\Rating;
+use App\Entity\Review;
 use App\Entity\Report;
 use App\Form\ReportType;
 use App\Form\TripType;
@@ -371,28 +371,19 @@ final class TripController extends AbstractController
             throw $this->createNotFoundException('L\'utilisateur spécifié n\'est pas le conducteur de ce trajet.');
         }
 
-        $rating = new Rating();
-        $rating->setRatingUser($currentUser);
-        $rating->setRatedUser($userToRate);
-        $rating->setTrip($trip);
+        $review = new Review();
+        $review->setUser($currentUser);
+        $review->setRatedDriver($userToRate);
 
-        $form = $this->createForm(RatingType::class, $rating);
+        $form = $this->createForm(RatingType::class, $review);
         $form->handleRequest($request);
 
         // if ($form->isSubmitted() && $form->isValid()) {
-        if ($form->isSubmitted()) {
-            if (!$form->isValid()) {
-                dd($form->getErrors(true));
-            }
-        
-           
-            $ratingValue = $request->request->get('rating_value');
-            $rating->setRating((int)$ratingValue);
-            
-            $em->persist($rating);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($review);
             $em->flush();
 
-            $this->addFlash('success', 'Merci pour votre évaluation du conducteur !');
+            $this->addFlash('success', 'Merci pour votre évaluation !');
             return $this->redirectToRoute('app_home');
         }
 

@@ -19,42 +19,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const csrfToken = csrfTokenInput.value;
 
             const formData = new FormData();
-            formData.append('_username', email); // Nom attendu par Symfony
-            formData.append('_password', password); // Nom attendu par Symfony
-            formData.append('_csrf_token', csrfToken); // Nom attendu par Symfony
+            formData.append('_username', email); 
+            formData.append('_password', password); 
+            formData.append('_csrf_token', csrfToken);
 
             try {
-                const response = await fetch(loginForm.action, { // Utilisez l'action du formulaire (app_login)
-                    method: 'POST', // La méthode doit être POST pour le login
+                const response = await fetch(loginForm.action, {
+                    method: 'POST',
                     body: formData,
-                    // FormData gère automatiquement le Content-Type: multipart/form-data
-                    // Si vous voulez simuler le x-www-form-urlencoded, vous pouvez faire:
-                    // headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    // body: new URLSearchParams(formData).toString(),
-                    // Mais FormData est souvent plus robuste.
-                    redirect: 'follow' // Permet à fetch de suivre les redirections (important pour le login)
+                    redirect: 'follow'
                 });
 
-                // Vérifier si la réponse est une redirection (connexion réussie)
+              
                 if (response.redirected) {
-                    window.location.href = response.url; // Rediriger le navigateur manuellement
+                    window.location.href = response.url;
                 } else {
-                    const data = await response.json(); // Ou response.text() si votre API renvoie du texte
+                    const data = await response.json();
                     if (response.ok) {
-                        // Si la réponse est OK mais pas une redirection, c'est peut-être un succès sans redirection explicite
                         console.log("Connexion réussie (sans redirection explicite) :", data);
-                        // Vous pouvez ajouter ici une logique pour rediriger ou afficher un message de succès
                     } else {
-                        // Gérer les erreurs (ex: "Invalid credentials" renvoyé par l'API)
                         let errorMessage = 'Une erreur est survenue lors de la connexion.';
-                        if (data && data.error) { // Si votre API renvoie une propriété 'error'
+                        if (data && data.error) {
                             errorMessage = data.error;
-                        } else if (data && data.message) { // Ou une propriété 'message'
+                        } else if (data && data.message) {
                             errorMessage = data.message;
                         }
                         console.error("Échec de la connexion:", errorMessage);
-                        // Afficher l'erreur à l'utilisateur sur la page
-                        alert(errorMessage); // Pour un test rapide
+                        alert(errorMessage);
                     }
                 }
             } catch (error) {

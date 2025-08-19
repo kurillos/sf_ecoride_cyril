@@ -1,6 +1,6 @@
 const Encore = require('@symfony/webpack-encore');
 
-if (!Encore.isProduction()) { 
+if (!Encore.isProduction()) {
     Encore.configureDevServerOptions(options => {
         options.compress = true;
         options.disableHostCheck = true;
@@ -28,7 +28,7 @@ Encore
     })
     .enableSassLoader(options => {
         options.implementation = require('sass');
-        options.additionalData = `@import "../../node_modules/bootstrap/scss/functions"; @import "../../node_modules/bootstrap/scss/variables"; @import "../../node_modules/bootstrap/scss/mixins";`;   
+        options.additionalData = `@import "../../node_modules/bootstrap/scss/functions"; @import "../../node_modules/bootstrap/scss/variables"; @import "../../node_modules/bootstrap/scss/mixins";`;
     })
     .enablePostCssLoader(options => {
         options.postcssOptions = {
@@ -37,14 +37,15 @@ Encore
             plugins: [],
         };
     })
-
     .addStyleEntry('main_styles', './assets/scss/custom_bootstrap.scss')
     .copyFiles({
-    from: './assets/images',
-    to: 'images/[path][name].[ext]',
-})
-.addEntry('form_validation', './assets/js/form_validation.js')
-.addEntry('login_form', './assets/js/login_form_validation.js')
-;
+        from: './assets/images',
+        to: 'images/[path][name].[ext]',
+    })
+    .addEntry('form_validation', './assets/js/form_validation.js')
+    .addEntry('login_form', './assets/js/login_form_validation.js')
+    .addEntry('rating', './assets/js/rating.js')
+    .addEntry('review_decision', './assets/js/review_decision.js')
+    .addEntry('report_management', './assets/js/report_management.js');
 
 module.exports = Encore.getWebpackConfig();

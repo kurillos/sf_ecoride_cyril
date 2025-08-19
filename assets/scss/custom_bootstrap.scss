@@ -55,7 +55,7 @@ body {
         color: $ecoride-black;
         margin-right: 15px;
         &:hover{
-            color: darken($ecoride-green, 10%);
+            color: mix(black, $ecoride-green, 10%);
         }
     }
     .btn-login {
@@ -135,7 +135,7 @@ img {
 
 .noUi-horizontal .noUi-handle {
     background: $primary;
-    border: 1px solid darken($primary, 10%);
+    border: 1px solid mix(black, $primary, 10%);
     border-radius: 100%;
     cursor: grab;
     box-shadow: none;
@@ -166,26 +166,27 @@ img {
     display: flex;
     justify-content: center;
     padding-left: 0;
-
-    .star {
-        font-size:2rem;
-        cursor: pointer;
-        padding: 0 0.25rem;
-        transition: color 0.2s;
-
-        &.bi-star {
-            color: #ccc;
-        }
-
-        &.bi-star-fill {
-            color: $ecoride-green;
-        }
-
-        &.form-check {
-            padding-left: 0;
-        }
-    }
 }
+
+.star-rating .star {
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    transition: color 0.2s;
+}
+
+.star-rating .star.bi-star {
+    color: #ccc;
+}
+
+.star-rating .star.bi-star-fill,
+.star-rating .star.active,
+.star-rating .star.hover {
+    color: $ecoride-green;
+}
+
+
+
 
 .modal-overlay {
     visibility: hidden;

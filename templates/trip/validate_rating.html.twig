@@ -12,9 +12,13 @@
             <div class="card-body">
                 <div class="form_group mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Votre note :</label>
-                    <div id="ratingStarsForDriver" class="star-rating"></div>
+                    <div id="ratingStarsForDriver" 
+                         class="star-rating" 
+                         data-initial-rating="{{ form.rating.vars.value|default(0) }}"                         
+                         data-target-input-id="{{ form.rating.vars.id }}">
+                    </div>
 
-                    <input type="hidden" id="minRatingForDriver" name="rating_value" value="{{ form.rating.vars.value|default(0) }}">
+                    
 
                 </div>
 
@@ -27,4 +31,9 @@
 
         <a href="{{ path('app_trip_show', {'id': trip.id}) }}" class="btn btn-danger mt-3">Annuler</a>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('rating') }}
 {% endblock %}
