@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Vehicle;
-use App\Entity\User; // N'oubliez pas d'importer User si vous l'utilisez
+use App\Entity\User;
 use App\Form\VehicleType;
-use Doctrine\ORM\EntityManagerInterface; // Correction : EntityManagerInterface
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,9 +17,8 @@ final class VehicleController extends AbstractController
 {
     #[Route('/', name: 'app_vehicle_index', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $request, EntityManagerInterface $entityManager): Response // Ajout du type de retour : Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        /** @var User $user */
         $user = $this->getUser();
 
         if (!$user) {
@@ -62,7 +61,6 @@ final class VehicleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            // Correction ici : message pour la mise à jour
             $this->addFlash('success', 'Votre véhicule a été mis à jour avec succès !'); 
 
             return $this->redirectToRoute('app_user_profile', ['_fragment' => 'vehicles']);
@@ -88,7 +86,6 @@ final class VehicleController extends AbstractController
             $entityManagerInterface->flush();
             $this->addFlash('success', 'Véhicule supprimé avec succès.');
         } else {
-            // Recommandé : ajouter un message d'erreur si le token est invalide
             $this->addFlash('error', 'Token de sécurité invalide. La suppression a échoué.');
         }
 
