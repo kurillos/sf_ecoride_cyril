@@ -61,4 +61,15 @@ class TripRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findFutureTripsByDriver($user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.driver = :driver')
+            ->andWhere('t.departureTime > :now')
+            ->setParameter('driver', $user)
+            ->setParameter('now', new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
 }

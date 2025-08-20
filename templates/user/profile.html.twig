@@ -119,6 +119,11 @@
                                 <p>Le formulaire de mise à jour des informations personnelles n'est pas disponible.</p>
                             {% endif %}
                             </div>
+                            <div class="card-footer text-end">
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">
+                                    Supprimer mon compte
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -172,6 +177,28 @@
                         </div>
                     </div>
                     {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmer la suppression du compte</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form id="deleteAccountForm" action="{{ path('app_user_delete') }}" method="post" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ app.user.id) }}">
+                        <button type="submit" class="btn btn-danger">Supprimer définitivement</button>
+                    </form>
                 </div>
             </div>
         </div>

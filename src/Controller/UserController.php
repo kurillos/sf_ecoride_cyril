@@ -7,6 +7,8 @@ use App\Entity\User;
 use App\Entity\UserPreference;
 use App\Entity\Vehicle;
 use App\Entity\Trip;
+use App\Entity\Review;
+use App\Entity\Report;
 use App\Form\UserProfileFormType;
 use App\Form\UserProfilePictureType;
 use App\Form\UserPreferenceType;
@@ -206,5 +208,80 @@ final class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('app_user_trips_history');
+    }
+
+    #[Route('/user/delete', name: 'app_user_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function delete(Request $request, EntityManagerInterface $entityManager, Security $security): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton de sécurité invalide.');
+            return $this->redirectToRoute('app_user_profile');
+        }
+
+        try {
+            // Dissocier les relations et supprimer les entités dépendantes
+
+            // Supprimer les avis rédigés par l'utilisateur ou le concernant
+            $reviews = $entityManager->getRepository(Review::class)->findBy(['user' => $user]);
+            foreach ($reviews as $review) {
+                $entityManager->remove($review);
+            }
+            $reviewsAboutUser = $entityManager->getRepository(Review::class)->findBy(['ratedDriver' => $user]);
+            foreach ($reviewsAboutUser as $review) {
+                $entityManager->remove($review);
+            }
+
+            // Supprimer les signalements émis par l'utilisateur ou le concernant
+            $reportsAsReporter = $entityManager->getRepository(Report::class)->findBy(['reporter' => $user]);
+            foreach ($reportsAsReporter as $report) {
+                $entityManager->remove($report);
+            }
+            $reportsAsReported = $entityManager->getRepository(Report::class)->findBy(['reportedUser' => $user]);
+            foreach ($reportsAsReported as $report) {
+                $entityManager->remove($report);
+            }
+
+            // Annuler et supprimer les réservations de l'utilisateur
+            $bookings = $entityManager->getRepository(Booking::class)->findBy(['user' => $user]);
+            foreach ($bookings as $booking) {
+                $entityManager->remove($booking);
+            }
+
+            // Gérer les trajets où l'utilisateur est conducteur
+            $trips = $entityManager->getRepository(Trip::class)->findBy(['driver' => $user]);
+            foreach ($trips as $trip) {
+                // Annuler les réservations associées à ce trajet
+                foreach ($trip->getBookings() as $booking) {
+                    $entityManager->remove($booking);
+                }
+                $entityManager->remove($trip);
+            }
+
+            // Supprimer les véhicules de l'utilisateur
+            foreach ($user->getVehicles() as $vehicle) {
+                $entityManager->remove($vehicle);
+            }
+
+            $entityManager->flush(); // Appliquer les suppressions des entités liées
+
+            // Supprimer l'utilisateur
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            // Déconnexion
+            $request->getSession()->invalidate();
+            $this->container->get('security.token_storage')->setToken(null);
+
+            $this->addFlash('success', 'Votre compte a été supprimé avec succès.');
+            return $this->redirectToRoute('app_home');
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Une erreur est survenue lors de la suppression de votre compte : ' . $e->getMessage());
+            return $this->redirectToRoute('app_user_profile');
+        }
     }
 }
