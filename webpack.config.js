@@ -46,6 +46,7 @@ Encore
     .addEntry('login_form', './assets/js/login_form_validation.js')
     .addEntry('rating', './assets/js/rating.js')
     .addEntry('review_decision', './assets/js/review_decision.js')
-    .addEntry('report_management', './assets/js/report_management.js');
+    .addEntry('report_management', './assets/js/report_management.js')
+    .addEntry('admin', './assets/js/admin.js');
 
 module.exports = Encore.getWebpackConfig();
