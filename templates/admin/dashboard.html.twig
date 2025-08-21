@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Administrateur{% endblock %}
+
+{% block body %}
+    <div class="container my-5" data-trip-counts='{{ tripCounts|json_encode }}' data-credit-earnings='{{ creditEarnings|json_encode }}'>
+        <h1 class="text-center mb-4 text-primary">Tableau de bord Administrateur</h1>
+        <p class="text-center text-secondary mb-5">Bienvenue dans votre espace de gestion. Vous pouvez gérer les employés, visualiser les statistiques de la plateforme.</p>
+
+        <div class="row mb-5">
+            <div class="col-md-6 offset-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h2 class="card-title">Crédits totaux de la plateforme</h2>
+                        <h2 class="text-success mt-3">{{ totalCredits }} €</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Nombre de covoiturages par jour</h2>
+                        <div style="height: 400px;">
+                            <canvas id="tripsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">Crédits gagnés par jour</h2>
+                        <div style="height: 400px;">
+                            <canvas id="creditsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm mb-5">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Gestion des Rôles</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Email</th>
+                                <th>Rôles</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.roles|join(', ') }}</td>
+                                    <td class="text-end">
+                                        {% if 'ROLE_EMPLOYEE' not in user.roles %}
+                                            <form action="{{ path('app_admin_user_promote', {id: user.id}) }}" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm">Promouvoir Employé</button>
+                                            </form>
+                                        {% else %}
+                                            <form action="{{ path('app_admin_user_demote', {id: user.id}) }}" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-warning btn-sm">Rétrograder</button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Aucun utilisateur trouvé.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}

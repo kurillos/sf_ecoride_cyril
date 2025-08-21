@@ -72,4 +72,14 @@ class TripRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function countByDate(): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('SUBSTRING(t.departureTime, 1, 10) as date', 'COUNT(t.id) as count')
+            ->groupBy('date')
+            ->orderBy('date', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
 }
