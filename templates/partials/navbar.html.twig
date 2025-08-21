@@ -17,13 +17,7 @@
                     <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">À Propos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="{{ path('app_contact') }}">Contact</a>
                 </li>
                 {% if app.user %}
                     <li class="nav-item dropdown">
@@ -46,6 +40,11 @@
                             <li><a class="dropdown-item" href="{{ path('app_user_profile') }}">Profil</a></li>
                             <li><a class="dropdown-item" href="{{ path('app_user_credits') }}">Ajout de crédits</a></li>
                             <li><hr class="dropdown-divider"></li>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li><a class="dropdown-item" href="{{ path('app_admin_dashboard') }}">Dashboard Admin</a></li>
+                            {% elseif is_granted('ROLE_EMPLOYEE') %}
+                                <li><a class="dropdown-item" href="{{ path('app_employee') }}">Dashboard Employé</a></li>
+                            {% endif %}
                             <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
                         </ul>
                     </li>
@@ -57,9 +56,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_signup') }}">Inscription</a>
                     </li>
-                {% endif %}
-                {% if is_granted('ROLE_EMPLOYEE') %}
-                    <a href="{{ path('app_employee') }}" class="nav-link">Tableau de bord employé</a>
                 {% endif %}
             </ul>
         </div>
