@@ -27,7 +27,6 @@ class TestController extends AbstractController
             return new Response('User not found.', Response::HTTP_NOT_FOUND);
         }
 
-        // Hacher le nouveau mot de passe
         $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
         $user->setPassword($hashedPassword);
 

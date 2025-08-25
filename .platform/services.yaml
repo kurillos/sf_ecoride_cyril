@@ -1,0 +1,9 @@
+# Définition du service MySQL
+mysql:
+    type: mysql:10.4
+    disk: 1024
+
+# Définition du service MongoDB
+mongodb:
+    type: mongodb:4.4
+    disk: 1024

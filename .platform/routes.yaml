@@ -1,0 +1,10 @@
+"https://www.{default}/":
+    type: 'upstream'
+    upstream: 'app:http'
+    cache:
+        enabled: false
+
+# Redirection de l'URL sans "www." vers l'URL avec "www."
+"https://{default}/":
+    type: 'redirect'
+    to: 'https://www.{default}/'

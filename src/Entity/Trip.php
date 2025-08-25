@@ -249,9 +249,6 @@ class Trip
         return $this;
     }
 
-    /**
-     * @return Collection<int, Booking>
-     */
     public function getBookings(): Collection
     {
         return $this->bookings;
@@ -270,7 +267,6 @@ class Trip
     public function removeBooking(Booking $booking): static
     {
         if ($this->bookings->removeElement($booking)) {
-            // set the owning side to null (unless already changed)
             if ($booking->getTrip() === $this) {
                 $booking->setTrip(null);
             }

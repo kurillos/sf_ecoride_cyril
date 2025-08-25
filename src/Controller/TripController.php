@@ -304,10 +304,9 @@ final class TripController extends AbstractController
             $trip->setStatus('completed');
             $entityManager->flush();
 
-            // Calculate driver earnings and apply platform fee
             $driver = $trip->getDriver();
             $totalEarnings = 0;
-            $platformFee = 2; // 2 credits deducted by the platform
+            $platformFee = 2;
 
             foreach ($trip->getBookings() as $booking) {
                 if ($booking->getStatus() === 'confirmed') {
@@ -317,14 +316,13 @@ final class TripController extends AbstractController
 
             $netEarnings = $totalEarnings - $platformFee;
 
-            // Ensure net earnings don't go below zero if there are very few bookings
             if ($netEarnings < 0) {
                 $netEarnings = 0;
             }
 
             $driver->setCredits($driver->getCredits() + $netEarnings);
             $entityManager->persist($driver);
-            $entityManager->flush(); // Flush again to save driver's updated credits
+            $entityManager->flush();
 
             $logger->info('Le statut du trajet a été mis à jour. Envoi des e-mails aux passagers.');
             // Notifier les passagers
@@ -378,7 +376,6 @@ final class TripController extends AbstractController
         $form = $this->createForm(RatingType::class, $review);
         $form->handleRequest($request);
 
-        // if ($form->isSubmitted() && $form->isValid()) {
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($review);
             $em->flush();

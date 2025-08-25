@@ -64,7 +64,6 @@ class RegistrationFormType extends AbstractType
                         'max' => 255,
                         'maxMessage' => 'Votre pseudonyme ne peut pas dépasser {{ limit }} caractères.',
                     ]),
-                    // Ajoute une contrainte Regex si tu as des exigences spécifiques au pseudo
                 ],
             ])
             ->add('email', EmailType::class, [

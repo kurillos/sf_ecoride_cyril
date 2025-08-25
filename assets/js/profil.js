@@ -20,12 +20,11 @@
             }
 
 
-            // Remplace les occurences __name par l'index actuel
             let newForm = prototype.replace(/__name__/g, index);
 
             const newVehicleDiv = document.createElement('div');
             newVehicleDiv.classList.add('vehicle-item', 'mb-3', 'p-3', 'border', 'rounded');
-            newVehicleDiv.innerHTML = newForm; // insére le prototype du formulaire.
+            newVehicleDiv.innerHTML = newForm;
 
 
             const removeButton = document.createElement('button');

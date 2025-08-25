@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nous Contacter{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Contactez-nous</h1>
+                    <p class="text-center text-muted mb-4">Une question, une suggestion ? Remplissez le formulaire ci-dessous et notre équipe vous répondra dans les plus brefs délais.</p>
+
+                    {{ form_start(contactForm, {'attr': {'name': 'contact_form', 'novalidate': 'novalidate'}}) }}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(contactForm.firstName) }}
+                            {{ form_widget(contactForm.firstName) }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(contactForm.lastName) }}
+                            {{ form_widget(contactForm.lastName) }}
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(contactForm.email) }}
+                        {{ form_widget(contactForm.email) }}
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(contactForm.phoneNumber) }}
+                        {{ form_widget(contactForm.phoneNumber) }}
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(contactForm.subject) }}
+                        {{ form_widget(contactForm.subject) }}
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(contactForm.message) }}
+                        {{ form_widget(contactForm.message) }}
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Envoyer le message</button>
+                    </div>
+
+                    {{ form_end(contactForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('contact_form_validation') }}
+{% endblock %}

@@ -175,7 +175,6 @@ final class UserController extends AbstractController
 
             $entityManager->flush();
 
-            // Send cancellation email to passenger
             $emailPassenger = (new Email())
                 ->from('no-reply@ecoride.com')
                 ->to($user->getEmail())
@@ -188,7 +187,6 @@ final class UserController extends AbstractController
 
             $mailer->send($emailPassenger);
 
-            // Send cancellation email to driver
             $emailDriver = (new Email())
                 ->from('no-reply@ecoride.com')
                 ->to($trip->getDriver()->getEmail())
@@ -223,9 +221,6 @@ final class UserController extends AbstractController
         }
 
         try {
-            // Dissocier les relations et supprimer les entités dépendantes
-
-            // Supprimer les avis rédigés par l'utilisateur ou le concernant
             $reviews = $entityManager->getRepository(Review::class)->findBy(['user' => $user]);
             foreach ($reviews as $review) {
                 $entityManager->remove($review);
@@ -235,7 +230,6 @@ final class UserController extends AbstractController
                 $entityManager->remove($review);
             }
 
-            // Supprimer les signalements émis par l'utilisateur ou le concernant
             $reportsAsReporter = $entityManager->getRepository(Report::class)->findBy(['reporter' => $user]);
             foreach ($reportsAsReporter as $report) {
                 $entityManager->remove($report);
@@ -245,28 +239,24 @@ final class UserController extends AbstractController
                 $entityManager->remove($report);
             }
 
-            // Annuler et supprimer les réservations de l'utilisateur
             $bookings = $entityManager->getRepository(Booking::class)->findBy(['user' => $user]);
             foreach ($bookings as $booking) {
                 $entityManager->remove($booking);
             }
 
-            // Gérer les trajets où l'utilisateur est conducteur
             $trips = $entityManager->getRepository(Trip::class)->findBy(['driver' => $user]);
             foreach ($trips as $trip) {
-                // Annuler les réservations associées à ce trajet
                 foreach ($trip->getBookings() as $booking) {
                     $entityManager->remove($booking);
                 }
                 $entityManager->remove($trip);
             }
 
-            // Supprimer les véhicules de l'utilisateur
             foreach ($user->getVehicles() as $vehicle) {
                 $entityManager->remove($vehicle);
             }
 
-            $entityManager->flush(); // Appliquer les suppressions des entités liées
+            $entityManager->flush();
 
             // Supprimer l'utilisateur
             $entityManager->remove($user);

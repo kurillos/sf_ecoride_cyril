@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.querySelector('form'); // Ou utilisez un ID: document.getElementById('loginForm')
+    const loginForm = document.querySelector('form');
 
     if (loginForm) { // Vérifie si le formulaire existe sur la page
         loginForm.addEventListener('submit', async (event) => {

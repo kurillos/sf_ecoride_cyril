@@ -36,6 +36,7 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/trip/new, roles: ROLE_DRIVER } 
 
 when@test:
     security:
@@ -54,7 +55,4 @@ when@test:
             ROLE_STAFF: [ROLE_STAFF]
             ROLE_BOTH: [ROLE_DRIVER, ROLE_PASSENGER]
             ROLE_DRIVER: ~
-            ROLE_PASSENGER: ~
-
-        access_control:
-            - { path: ^/trip/new, roles: ROLE_DRIVER } 
+            ROLE_PASSENGER: ~ 

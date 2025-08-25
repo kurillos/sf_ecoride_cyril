@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route; // Pour les annotations
+use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
@@ -32,15 +32,13 @@ class HomeController extends AbstractController
     public function signup(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        // Définir les crédits par défaut *avant* de soumettre le formulaire
         $user->setCredits(20);
         $user->setRoles(['ROLE_USER']);
 
         $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request); // Traite la soumission du formulaire
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Encoder le mot de passe
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -48,20 +46,16 @@ class HomeController extends AbstractController
                 )
             );
 
-            // Persister l'utilisateur en base de données
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // TODO: Gérer la confirmation d'email si tu actives isVerified (make:registration:form)
-            // Par exemple, rediriger vers une page de succès ou la page de connexion
             $this->addFlash('success', 'Votre compte a été créé avec succès !');
 
-            return $this->redirectToRoute('app_home'); // Redirige vers la page d'accueil par exemple
+            return $this->redirectToRoute('app_home');
         }
 
-        // Rend le formulaire dans le template Twig
         return $this->render('pages/signup.html.twig', [
-            'userForm' => $form->createView(), // Passe la vue du formulaire au template
+            'userForm' => $form->createView(),
             'controller_name' => 'HomeController',
         ]);
     }

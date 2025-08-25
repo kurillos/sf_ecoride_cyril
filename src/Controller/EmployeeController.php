@@ -99,10 +99,6 @@ class EmployeeController extends AbstractController
         $sanctionType = $data['type'] ?? 'none';
         $sanctionComment = $data['comment'] ?? '';
 
-        // Here you would have the logic to apply the sanction to the user
-        // For example, you could create a new Sanction entity and persist it.
-        // You could also send an email to the user.
-
         $report->setStatus('processed');
         $em->flush();
 

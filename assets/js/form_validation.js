@@ -6,7 +6,6 @@ const inputPassword = document.getElementById("registration_form_plainPassword_f
 const inputPasswordConfirm = document.getElementById("registration_form_plainPassword_second");
 const inputAgreeTerms = document.getElementById("registration_form_agreeTerms");
 
-// récupération des div de feedback
 const feedbackNom = document.getElementById("feedbackFirstName");
 const feedbackPrenom = document.getElementById("feedbackLastName");
 const feedbackPseudo = document.getElementById("feedbackPseudo");
@@ -23,7 +22,6 @@ const feedbackAgreeTerms = document.getElementById("feedbackCheckBox");
  const feedbackPasswordConfirmSpan = document.getElementById("passwordConfirmErrorMessage");
  const feedbackAgreeTermsSpan = document.getElementById("agreeTermsErrorMessage");
 
-// bouton de validation
 const btnValidation = document.getElementById("btn-validation-inscription");
 
 inputNom.addEventListener("keyup", validateForm);

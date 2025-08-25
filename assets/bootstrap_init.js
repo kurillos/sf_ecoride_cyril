@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const collapseElementList = Array.from(document.querySelectorAll('[data-bs-toggle="collapse"]'));
     collapseElementList.map(collapseEl => new Collapse(collapseEl, { toggle: false }));
 
-    // The modal component is automatically initialized via data attributes,
-    // but we need to import it to make sure it's included in the build.
     if (typeof Modal === 'undefined') {
         console.error('Bootstrap Modal component not found');
     }

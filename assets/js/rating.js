@@ -5,7 +5,7 @@ function initializeRating() {
         return;
     }
     starRatingContainer.dataset.initialized = true;
-    starRatingContainer.innerHTML = ''; // Clear any existing stars
+    starRatingContainer.innerHTML = '';
 
     const ratingInputId = starRatingContainer.dataset.targetInputId;
     const ratingInput = document.getElementById(ratingInputId);

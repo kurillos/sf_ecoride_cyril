@@ -3,8 +3,6 @@
 @import "../../node_modules/bootstrap/scss/maps";
 @import "../../node_modules/bootstrap/scss/mixins"; 
 
-// 3. Définis/Surcharge variables personnalisées de Bootstrap ici.
-
 // Couleurs personnalisées
 $ecoride-black: #000000;
 $ecoride-white: #FFFFFF;
@@ -36,10 +34,9 @@ $headings-font-family: 'Inter', sans-serif;
 @import "../../node_modules/bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 
-// Import des polices Google Fonts (peut aussi être fait dans ton HTML)
+// Import des polices Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
-// 6. Tes styles CSS personnalisés.
 body {
     font-family: $font-family-base;
     color: $ecoride-black;

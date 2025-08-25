@@ -28,15 +28,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
@@ -53,7 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 2, max: 255, minMessage: 'Le nom doit contenir au moins {{ limit }} caractères.')]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 255, unique: true)] // Généralement, le pseudo est unique
+    #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank(message: 'Le pseudonyme ne peut pas être vide.')]
     #[Assert\Length(min: 3, max: 255, minMessage: 'Le pseudonyme doit contenir au moins {{ limit }} caractères.')]
     private ?string $pseudo = null;
@@ -61,17 +55,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    /**
-     * #[Vich\UploadableField(mapping: 'profile_picture', fileNameProperty: 'profilePictureFilename')]
-     * @var File|null
-     */
     #[Vich\UploadableField(mapping: 'profile_picture', fileNameProperty: 'profilePictureFilename')]
     private ?File $profilePictureFile = null;
 
-    /**
-     * @ORM\Column(type: 'string', nullable: true)
-     * @var string|null
-     */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profilePictureFilename = null;
 
@@ -90,9 +76,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class)]
     private Collection $reviewsGiven;
 
-    /**
-     * @var Collection<int, Review>
-     */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'ratedDriver')]
     private Collection $reviewsReceived;
 
@@ -124,17 +107,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -142,9 +119,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -152,9 +126,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -212,12 +183,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
-        // $this->plainPassword = null;
+    
     }
 
     public function getProfilePictureFilename(): ?string
@@ -295,11 +263,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeVehicle(Vehicle $vehicle): static
     {
-        if ($this->vehicles->removeElement($vehicle)){
+        if ($this->vehicles->removeElement($vehicle)) {
             if ($vehicle->getOwner() === $this) {
                 $vehicle->setOwner(null);
-            }      
+            }
         }
+
         return $this;
     }
 
@@ -368,9 +337,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $total / $reviews->count();
     }
 
-    /**
-     * @return Collection<int, Review>
-     */
+
     public function getReviewsGiven(): Collection
     {
         return $this->reviewsGiven;
@@ -397,9 +364,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Review>
-     */
     public function getReviewsReceived(): Collection
     {
         return $this->reviewsReceived;

@@ -1,0 +1,40 @@
+type: 'php:8.3'
+
+web:
+    locations:
+        '/':
+            root: 'public'
+            passthru: '/index.php'
+
+relationships:
+    database: 'mysql:mysql'
+    mongodb: 'mongodb:mongodb'
+
+disk: 256
+mounts:
+    'var':
+        source: 'local'
+        source_path: 'var'
+
+build:
+    flavor: 'none'
+    commands:
+        build:
+            - 'composer install --no-dev --optimize-autoloader'
+            - 'npm install'
+            - 'npm run build'
+
+deploy:
+    commands:
+        start:
+            - 'php bin/console doctrine:migrations:migrate --no-interaction'
+            - 'php bin/console cache:clear'
+            - 'php bin/console cache:warmup'
+
+
+variables:
+    env:
+        APP_ENV: 'prod'
+
+
+hooks: {}

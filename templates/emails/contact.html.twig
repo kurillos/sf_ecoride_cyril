@@ -1,0 +1,13 @@
+<p><strong>Nom :</strong> {{ lastName }}</p>
+<p><strong>Prénom :</strong> {{ firstName }}</p>
+<p><strong>Email :</strong> {{ email_address }}</p>
+{% if phone %}
+    <p><strong>Téléphone :</strong> {{ phone }}</p>
+{% endif %}
+
+<hr>
+
+<h3>Message :</h3>
+<p>
+    {{ message|nl2br }}
+</p>
