@@ -1,40 +1,68 @@
-type: 'php:8.3'
+name: app
+
+type: php:8.4
+
+runtime:
+    extensions:
+        - apcu
+        - mbstring
+        - sodium
+        - ctype
+        - iconv
+        
+
+#variables:
+#    php:
+#        # uncomment on PHP 7.4+
+#        #opcache.preload: config/preload.php
+
+build:
+    flavor: none
+
+disk: 1024
 
 web:
     locations:
-        '/':
-            root: 'public'
-            passthru: '/index.php'
+        "/":
+            root: "public"
+            expires: 1h
+            passthru: "/index.php"
 
-relationships:
-    database: 'mysql:mysql'
-    mongodb: 'mongodb:mongodb'
-
-disk: 256
 mounts:
-    'var':
-        source: 'local'
-        source_path: 'var'
+    "/var/cache": { source: local, source_path: var/cache }
+    
 
-build:
-    flavor: 'none'
-    commands:
-        build:
-            - 'composer install --no-dev --optimize-autoloader'
-            - 'npm install'
-            - 'npm run build'
+hooks:
+    build: |
+        set -x -e
 
-deploy:
-    commands:
-        start:
-            - 'php bin/console doctrine:migrations:migrate --no-interaction'
-            - 'php bin/console cache:clear'
-            - 'php bin/console cache:warmup'
+        curl -fs https://get.symfony.com/cloud/configurator | bash
+        
+        NODE_VERSION=22 symfony-build
 
+    deploy: |
+        set -x -e
 
-variables:
-    env:
-        APP_ENV: 'prod'
+        symfony-deploy
 
+crons:
+    security-check:
+        # Check that no security issues have been found for PHP packages deployed in production
+        spec: '50 23 * * *'
+        cmd: if [ "$PLATFORM_ENVIRONMENT_TYPE" = "production" ]; then croncape COMPOSER_ROOT_VERSION=1.0.0 COMPOSER_AUDIT_ABANDONED=ignore composer audit --no-cache; fi
+    clean-expired-sessions:
+        spec: '17,47 * * * *'
+        cmd: croncape php-session-clean
 
-hooks: {}
+workers:
+    messenger:
+        # PHP background workers usually don't require much CPU. See
+        # https://symfony.com/doc/current/cloud/cookbooks/resources_allocation.html
+        # for more information
+        size: XS
+        resources:
+            base_memory: 64 # Keep in sync with the `memory-limit` flag value
+            memory_ratio: 128
+        commands:
+            # Consume "async" messages (as configured in the routing section of config/packages/messenger.yaml)
+            start: symfony console --time-limit=3600 --memory-limit=64M messenger:consume async
