@@ -7,7 +7,7 @@ use App\Entity\User;
 use App\Entity\UserPreference;
 use App\Entity\Vehicle;
 use App\Entity\Trip;
-use App\Entity\Review;
+
 use App\Entity\Report;
 use App\Form\UserProfileFormType;
 use App\Form\UserProfilePictureType;
@@ -221,14 +221,7 @@ final class UserController extends AbstractController
         }
 
         try {
-            $reviews = $entityManager->getRepository(Review::class)->findBy(['user' => $user]);
-            foreach ($reviews as $review) {
-                $entityManager->remove($review);
-            }
-            $reviewsAboutUser = $entityManager->getRepository(Review::class)->findBy(['ratedDriver' => $user]);
-            foreach ($reviewsAboutUser as $review) {
-                $entityManager->remove($review);
-            }
+            
 
             $reportsAsReporter = $entityManager->getRepository(Report::class)->findBy(['reporter' => $user]);
             foreach ($reportsAsReporter as $report) {

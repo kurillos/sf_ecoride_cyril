@@ -15,23 +15,8 @@
                     <img src="{{ vich_uploader_asset(trip.driver, 'profilePictureFile') | default(asset('images/default-profile-picture.jpg')) }}" alt="Photo de profil de {{ trip.driver.pseudo }}" class="rounded-circle me-3" width="80" height="80">
                     <div>
                         <h5 class="card-title mb-0">Proposé par : {{ trip.driver.pseudo }}</h5>
-                        {% set avgRating = trip.driver.getAverageRating() %}
-                        <div class="d-flex align-items-center justify-content-start gap-1 col-lg-6">
-                            {% if avgRating is not null %}
-                                {% set roundedRating = avgRating|round(0, 'floor') %}
-                                {% for i in 1..5 %}
-                                    {% if i <= roundedRating %}
-                                        <i class="bi bi-star-fill text-success"></i>
-                                    {% else %}
-                                        <i class="bi bi-star text-secondary"></i>
-                                    {% endif %}
-                                {% endfor %}
-                                <small class="text-muted ms-2"> ({{ trip.driver.reviewsReceived|length }} avis)</small>
-                            {% else %}
-                                <span class="badge bg-secondary">Nouveau conducteur</span>
-                            {% endif %}
-                        </div>
-                        </p>
+                        
+                        
                     </div>
                 </div>
                 {% if trip.vehicle.isElectric %}

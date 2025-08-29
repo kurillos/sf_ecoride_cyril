@@ -22,13 +22,51 @@
                         </div>
                     {% endfor %}
 
-                    {{ form_start(tripForm) }}
+                    {{ form_start(tripForm, {'attr': {'id': 'trip-form'}}) }}
                         {{ form_widget(tripForm) }}
-                        <button class="btn btn-primary mt-3" type="submit">Créer le voyage</button>
+                        <div class="alert alert-info" role="alert">
+                            La plateforme prendra 2 crédits pour son bon fonctionnement.
+                        </div>
+                        <button class="btn btn-primary mt-3" type="button" data-bs-toggle="modal" data-bs-target="#confirmationModal">Créer le voyage</button>
                     {{ form_end(tripForm) }}
                 </div>
             </div>
         </div>
     
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Voulez-vous vraiment créer ce voyage ?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-primary" id="confirm-create-trip">Confirmer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const createTripBtn = document.getElementById('confirm-create-trip');
+            const tripForm = document.getElementById('trip-form');
+
+            if (createTripBtn && tripForm) {
+                createTripBtn.addEventListener('click', function() {
+                    tripForm.submit();
+                });
+            }
+        });
+    </script>
 {% endblock %}

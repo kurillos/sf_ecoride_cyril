@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Entity\Booking;
 use App\Entity\Trip;
 use App\Entity\User;
-use App\Entity\Review;
+
 use App\Entity\Report;
 use App\Form\ReportType;
 use App\Form\TripType;
-use App\Form\RatingType;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -354,42 +354,7 @@ final class TripController extends AbstractController
         return $this->redirectToRoute('app_trip_show', ['id' => $trip->getId()]);
     }
 
-    #[Route('/trip/validate/{trip}/{userToRate}', name: 'app_trip_validate_good', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function validateGoodAction(Request $request, Trip $trip, User $userToRate, EntityManagerInterface $em): Response
-    {
-
-        $currentUser = $this->getUser();
-           if (!$trip->getPassengers()->contains($currentUser)) {
-            // Empêche un utilisateur de noter un trajet auquel il n'a pas participé
-            throw $this->createAccessDeniedException("Vous ne pouvez pas noter ce trajet car vous n'y avez pas participé.");
-        }
-
-        if ($userToRate->getId() !== $trip->getDriver()->getID()) {
-            throw $this->createNotFoundException('L\'utilisateur spécifié n\'est pas le conducteur de ce trajet.');
-        }
-
-        $review = new Review();
-        $review->setUser($currentUser);
-        $review->setRatedDriver($userToRate);
-
-        $form = $this->createForm(RatingType::class, $review);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($review);
-            $em->flush();
-
-            $this->addFlash('success', 'Merci pour votre évaluation !');
-            return $this->redirectToRoute('app_home');
-        }
-
-            return $this->render('trip/validate_rating.html.twig', [
-                'trip' => $trip,
-                'userToRate' => $userToRate,
-                'form' => $form->createView(),
-            ]);
-    }
+    
 
     #[Route('/trip/report/{tripId}/{userId}', name:'app_trip_report', methods: ['GET', 'POST'])]
     public function report(Request $request, Trip $tripId, User $userId, EntityManagerInterface $entityManager, Security $security): Response

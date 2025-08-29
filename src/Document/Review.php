@@ -4,36 +4,45 @@ namespace App\Document;
 
 use App\Repository\ReviewRepository;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
+use App\Entity\Service;
 
 #[ODM\Document(repositoryClass: ReviewRepository::class)]
 class Review
 {
     #[ODM\Id]
-    protected $id;
+    private ?string $id = null;
 
     #[ODM\Field(type: 'string')]
-    private string $comment;
+    private ?string $comment = null;
 
     #[ODM\Field(type: 'int')]
-    private int $rating;
+    private ?int $rating = null;
 
     #[ODM\Field(type: 'string')]
-    private string $ratedDriverId;
+    private ?string $status = null;
+
+    #[ODM\Field(type: 'date')]
+    private ?\DateTimeInterface $validatedAt = null;
+
+    #[ODM\Field(type: 'date')]
+    private ?\DateTimeInterface $rejectedAt = null;
 
     #[ODM\Field(type: 'string')]
-    private string $status = 'pending';
+    private ?string $body = null;
 
-    #[ODM\Field(type: 'date_immutable', nullable: true)]
-    private ?\DateTimeImmutable $validatedAt = null;
+    #[ODM\Field(type: 'date')]
+    private ?\DateTimeInterface $createdAt = null;
 
-    #[ODM\Field(type: 'date_immutable', nullable: true)]
-    private ?\DateTimeImmutable $rejectedAt = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private $user;
 
-    #[ODM\Field(type: 'string')]
-    private ?string $userId = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private $ratedDriver;
 
-    #[ODM\Field(type: 'date_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\ManyToOne(targetEntity: Service::class)]
+    private $service;
 
     public function getId(): ?string
     {
@@ -45,7 +54,7 @@ class Review
         return $this->comment;
     }
 
-    public function setComment(?string $comment): static
+    public function setComment(?string $comment): self
     {
         $this->comment = $comment;
 
@@ -57,7 +66,7 @@ class Review
         return $this->rating;
     }
 
-    public function setRating(?int $rating): static
+    public function setRating(?int $rating): self
     {
         $this->rating = $rating;
 
@@ -69,71 +78,94 @@ class Review
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function getRatedDriverId(): ?string
+    public function getValidatedAt(): ?\DateTimeInterface
     {
-        return $this->ratedDriverId;
+        return $this->validatedAt;
     }
 
-    public function setRatedDriverId(?string $ratedDriverId): static
+    public function setValidatedAt(?\DateTimeInterface $validatedAt): self
     {
-        $this->ratedDriverId = $ratedDriverId;
+        $this->validatedAt = $validatedAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getRejectedAt(): ?\DateTimeInterface
+    {
+        return $this->rejectedAt;
+    }
+
+    public function setRejectedAt(?\DateTimeInterface $rejectedAt): self
+    {
+        $this->rejectedAt = $rejectedAt;
+
+        return $this;
+    }
+
+    public function getBody(): ?string
+    {
+        return $this->body;
+    }
+
+    public function setBody(?string $body): self
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUserId(): ?string
+    public function getUser(): ?User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(?string $userId): static
+    public function setUser(?User $user): self
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getValidatedAt(): ?\DateTimeImmutable
+    public function getRatedDriver(): ?User
     {
-        return $this->validatedAt;
+        return $this->ratedDriver;
     }
 
-    public function setValidatedAt(?\DateTimeImmutable $validateAt): static
+    public function setRatedDriver(?User $ratedDriver): self
     {
-        $this->validatedAt = $validateAt;
+        $this->ratedDriver = $ratedDriver;
 
         return $this;
     }
 
-    public function getRejectedAt(): ?\DateTimeImmutable
+    public function getService(): ?Service
     {
-        return $this->rejectedAt;
+        return $this->service;
     }
 
-    public function setRejectedAt(?\DateTimeImmutable $rejectedAt): static
+    public function setService(?Service $service): self
     {
-        $this->rejectedAt = $rejectedAt;
+        $this->service = $service;
 
         return $this;
     }
 }
-

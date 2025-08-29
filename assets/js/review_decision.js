@@ -1,82 +1,65 @@
-import { Modal } from 'bootstrap';
+const confirmActionButton = document.getElementById('confirmActionButton');
+const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+const modalMessageText = document.querySelector('.modalMessageText');
 
-document.addEventListener('DOMContentLoaded', () => {
-    const messageModalElement = document.getElementById('messageModal');
-    const confirmationModalElement = document.getElementById('confirmationModal');
+let actionToConfirm = null;
 
-    if (!messageModalElement || !confirmationModalElement) {
-        console.error('One or more modals are missing.');
+const executeReviewDecision = () => {
+    if (!actionToConfirm) {
         return;
     }
 
-    const messageModal = Modal.getOrCreateInstance(messageModalElement);
-    const confirmationModal = Modal.getOrCreateInstance(confirmationModalElement);
-    
-    const modalMessageText = messageModalElement.querySelector('.modalMessageText');
-    const confirmationMessage = confirmationModalElement.querySelector('#confirmationMessage');
-    const confirmActionButton = confirmationModalElement.querySelector('#confirmActionButton');
+    const { action, reviewId } = actionToConfirm;
 
-    let actionToConfirm = null;
-
-    const executeReviewDecision = () => {
-        if (!actionToConfirm) return;
-
-        const { action, reviewId } = actionToConfirm;
-
-        fetch(`/employee/review/${action}/${reviewId}`, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.message || 'Une erreur est survenue.');
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
+    fetch(`/employee/review/${action}/${reviewId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            modalMessageText.textContent = data.message;
+            messageModal.show();
             const reviewElement = document.getElementById(`review-${reviewId}`);
             if (reviewElement) {
                 reviewElement.remove();
             }
+        } else {
             modalMessageText.textContent = data.message;
             messageModal.show();
-        })
-        .catch(error => {
-            console.error('Erreur lors de la décision sur l\'avis:', error);
-            modalMessageText.textContent = error.message;
-            messageModal.show();
-        })
-        .finally(() => {
-            actionToConfirm = null;
-            confirmationModal.hide();
-        });
-    };
-
-    const handleReviewDecisionClick = (event) => {
-        const button = event.currentTarget;
-        const action = button.dataset.action;
-        const reviewId = button.dataset.reviewId;
-
-        if (!action || !reviewId) {
-            console.error('Action or review ID is missing.');
-            return;
         }
-
-        actionToConfirm = { action, reviewId };
-
-        const actionText = action === 'validate' ? 'valider' : 'refuser';
-        confirmationMessage.textContent = `Êtes-vous sûr de vouloir ${actionText} cet avis ?`;
-        
-        confirmationModal.show();
-    };
-
-    document.querySelectorAll('.validate-review-btn, .reject-review-btn').forEach(button => {
-        button.addEventListener('click', handleReviewDecisionClick);
+    })
+    .catch(error => {
+        console.error('Erreur lors de la décision d\'avis:', error);
+        modalMessageText.textContent = 'Une erreur est survenue lors du traitement de votre demande.';
+        messageModal.show();
+    })
+    .finally(() => {
+        confirmationModal.hide();
+        actionToConfirm = null;
     });
+};
 
-    confirmActionButton.addEventListener('click', executeReviewDecision);
+const handleReviewDecisionClick = (event) => {
+    const button = event.currentTarget;
+    const action = button.dataset.action;
+    const reviewId = button.dataset.reviewId;
+
+    if (!action || !reviewId) {
+        console.error('Action or review ID is missing.');
+        return;
+    }
+
+    document.getElementById('confirmationMessage').textContent = `Êtes-vous sûr de vouloir ${action === 'validate' ? 'valider' : 'rejeter'} cet avis ?`;
+    actionToConfirm = { action, reviewId };
+    confirmationModal.show();
+};
+
+document.querySelectorAll('.validate-review-btn, .reject-review-btn').forEach(button => {
+    button.addEventListener('click', handleReviewDecisionClick);
 });
+
+confirmActionButton.addEventListener('click', executeReviewDecision);

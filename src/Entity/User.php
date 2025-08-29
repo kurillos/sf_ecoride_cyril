@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use App\Entity\Vehicle;
-use App\Entity\Review;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -34,8 +34,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-     #[ORM\Column(type: 'integer', options: ['default' => 0])]
-    private int $credits = 0;
+     #[ORM\Column(type: 'integer', options: ['default' => 20])]
+    private int $credits = 20;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le prénom ne peut pas être vide.')]
@@ -73,11 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'driver', targetEntity: Trip::class)]
     private Collection $tripAsDriver;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class)]
-    private Collection $reviewsGiven;
-
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'ratedDriver')]
-    private Collection $reviewsReceived;
+    
 
 
     public function __construct()
@@ -86,8 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->vehicles = new ArrayCollection();
         $this->tripAsDriver = new ArrayCollection();
         $this->updatedAt = new \DateTimeImmutable();
-        $this->reviewsGiven = new ArrayCollection();
-        $this->reviewsReceived = new ArrayCollection();
+        
     }
 
     public function getId(): ?int
@@ -321,72 +316,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_diff(array_keys(get_object_vars($this)), ['profilePictureFile']);
     }
 
-    public function getAverageRating(): ?float
-    {
-        $reviews = $this->getReviewsReceived()->filter(fn(Review $review) => $review->getStatus() === 'approved');
-
-        if ($reviews->isEmpty()) {
-            return null;
-        }
-
-        $total = 0;
-        foreach ($reviews as $review) {
-            $total += $review->getRating();
-        }
-
-        return $total / $reviews->count();
-    }
+    
 
 
-    public function getReviewsGiven(): Collection
-    {
-        return $this->reviewsGiven;
-    }
-
-    public function addReviewGiven(Review $review): static
-    {
-        if (!$this->reviewsGiven->contains($review)) {
-            $this->reviewsGiven->add($review);
-            $review->setUser($this); 
-        }
-
-        return $this;
-    }
-
-    public function removeReviewGiven(Review $review): static
-    {
-        if ($this->reviewsGiven->removeElement($review)) {
-            if ($review->getUser() === $this) {
-                $review->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getReviewsReceived(): Collection
-    {
-        return $this->reviewsReceived;
-    }
-
-    public function addReviewReceived(Review $review): static
-    {
-        if (!$this->reviewsReceived->contains($review)) {
-            $this->reviewsReceived->add($review);
-            $review->setRatedDriver($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReviewReceived(Review $review): static
-    {
-        if ($this->reviewsReceived->removeElement($review)) {
-            if ($review->getRatedDriver() === $this) {
-                $review->setRatedDriver(null);
-            }
-        }
-
-        return $this;
-    }
+    
 }

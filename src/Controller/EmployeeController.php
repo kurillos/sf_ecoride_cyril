@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 use App\Repository\ReportRepository;
 use App\Repository\ReviewRepository;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,6 +29,8 @@ class EmployeeController extends AbstractController
             'pendingReports' => $pendingReports,
         ]);
     }
+
+    
 
     #[Route('/employee/review/{id}/{action}', name: 'app_employee_review_decision', methods: ['POST'])]
     public function reviewDecision(int $id, string $action, ReviewRepository $reviewRepository): Response

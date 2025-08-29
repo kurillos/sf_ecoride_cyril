@@ -66,11 +66,7 @@ class TripType extends AbstractType
                 'label' => 'Animaux autorisés ?',
                 'required' => false,
             ])
-            ->add('status')
-            ->add('driver', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
+            
             ->add('vehicle', EntityType::class, [
                 'class' => Vehicle::class,
                 'choice_label' => function (Vehicle $vehicle) {

@@ -8,6 +8,8 @@
         <p class="text-center text-secondary mb-5">Bienvenue dans votre espace de gestion. Vous pouvez gérer les avis et les signalements en attente.</p>
 
         <div class="row">
+            
+
             <div class="col-lg-6 mb-4">
                 <div class="card shadow-sm h-100 border-warning">
                     <div class="card-header bg-warning text-white">
@@ -188,6 +190,7 @@
 
 {% block javascripts %}
     {{ parent() }}
+    
     {{ encore_entry_script_tags('review_decision') }}
     {{ encore_entry_script_tags('report_management') }}
 {% endblock %}
