@@ -69,10 +69,8 @@
                 "assets:install %PUBLIC_DIR%": "symfony-cmd"
             },
             "post-install-cmd": [
-                "@auto-scripts",
-                "@heroku-post-install"
-            ],
-            "heroku-post-install": "npm install --omit=dev && npm run build"
+                "@auto-scripts"
+            ]
         },
         "conflict": {
             "symfony/symfony": "*"
