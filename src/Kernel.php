@@ -9,13 +9,8 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    public function registerBundles(): iterable
+    protected function getProjectDir(): string
     {
-        $contents = require $this->getProjectDir() . '/config/bundles.php';
-        foreach ($contents as $class => $envs) {
-            if ($envs[$this->environment] ?? $envs['all'] ?? false) {
-                yield new $class();
-            }
-        }
+        return dirname(__DIR__);
     }
 }
