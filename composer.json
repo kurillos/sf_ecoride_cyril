@@ -28,7 +28,8 @@
         "symfony/web-profiler-bundle": "7.3.*",
         "symfony/debug-bundle": "7.3.*",
         "symfony/maker-bundle": "^1.0",
-        "doctrine/doctrine-fixtures-bundle": "^3.5"
+        "doctrine/doctrine-fixtures-bundle": "^3.5",
+        "doctrine/mongodb-odm-bundle": "^5.4.1"
         },
         "require-dev": {
             "symfony/stopwatch": "7.3.*"
