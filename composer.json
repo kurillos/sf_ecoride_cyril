@@ -27,10 +27,10 @@
             "symfony/yaml": "7.3.*",
         "symfony/web-profiler-bundle": "7.3.*",
         "symfony/debug-bundle": "7.3.*",
-        "symfony/maker-bundle": "^1.0"
+        "symfony/maker-bundle": "^1.0",
+        "doctrine/doctrine-fixtures-bundle": "^3.5"
         },
         "require-dev": {
-            "doctrine/doctrine-fixtures-bundle": "^3.5",
             "symfony/stopwatch": "7.3.*"
         },
         "config": {
