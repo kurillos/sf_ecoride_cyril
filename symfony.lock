@@ -383,4 +383,11 @@
             "./config/packages/vich_uploader.yaml"
         ]
     }
+
+    {
+"_type": "symfony-bundle-config",
+"name": "WebProfilerBundle",
+"version": "5.4.19",
+"env": "dev"
+}
 }
