@@ -1,7 +1,7 @@
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/maps";
-@import "bootstrap/scss/mixins";
+@use "bootstrap/scss/functions";
+@use "bootstrap/scss/variables" as *;
+@use "bootstrap/scss/maps";
+@use "bootstrap/scss/mixins";
 
 // Couleurs personnalisées
 $ecoride-black: #000000;
@@ -27,14 +27,14 @@ $theme-colors: map-merge(
 );
 
 // Fonts personnalisées
-$font-family-sans-serif: 'lato', sans-serif;
+$font-family-sans-serif: 'Lato', sans-serif;
 $font-family-base: 'Lato', sans-serif;
 $headings-font-family: 'Inter', sans-serif;
 
-@import "bootstrap/scss/bootstrap";
-@import "bootstrap-icons/font/bootstrap-icons.css";
+@use "bootstrap/scss/bootstrap" as *;
 
-// Import des polices Google Fonts
+@use "bootstrap-icons/font/bootstrap-icons.css" as *;
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 body {
@@ -181,9 +181,6 @@ img {
 .star-rating .star.hover {
     color: $ecoride-green;
 }
-
-
-
 
 .modal-overlay {
     visibility: hidden;
