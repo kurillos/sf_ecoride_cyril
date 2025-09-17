@@ -1,7 +1,7 @@
-@use "bootstrap/scss/functions";
+@use "bootstrap/scss/functions" as *;
 @use "bootstrap/scss/variables" as *;
-@use "bootstrap/scss/maps";
-@use "bootstrap/scss/mixins";
+@use "bootstrap/scss/maps" as *;
+@use "bootstrap/scss/mixins" as *;
 
 // Couleurs personnalisées
 $ecoride-black: #000000;
