@@ -2,7 +2,6 @@
   "name": "sf_ecoride_cyril",
   "version": "1.0.0",
   "description": "EcoRide est une plateforme de covoiturage qui se soucie de l'écologie. L'objectif est de réduire votre empreinte carbone tout en passant un agréable trajet. EcoRide est plus qu'un simple covoiturage, c'est une aventure.",
-  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "dev": "encore dev",

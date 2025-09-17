@@ -9,7 +9,11 @@ Encore
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
     .enableStimulusBridge('./assets/controllers.json')
-    .enableSassLoader()
+    .enableSassLoader((options) => {
+        options.sassOptions = {
+            quietDeps: true
+        };
+    })
     .enablePostCssLoader()
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
