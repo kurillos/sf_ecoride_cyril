@@ -1,15 +1,6 @@
 const Encore = require('@symfony/webpack-encore');
 const path = require('path');
 
-Encore.configureBabel((config) => {
-    config.presets = [
-        ['@babel/preset-env', {
-            useBuiltIns: 'usage',
-            corejs: '3.25'
-        }]
-    ];
-});
-
 Encore
     .setOutputPath('public/build/')
     .setPublicPath('/build')
@@ -21,6 +12,10 @@ Encore
     .enableSassLoader()
     .enablePostCssLoader()
     .enableSourceMaps(!Encore.isProduction())
-    .enableVersioning(Encore.isProduction());
+    .enableVersioning(Encore.isProduction())
+    .configureBabelPresetEnv((config) => {
+        config.useBuiltIns = 'usage';
+        config.corejs = 3;
+    });
 
 module.exports = Encore.getWebpackConfig();
