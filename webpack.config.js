@@ -12,10 +12,17 @@ Encore
     .enableSassLoader()
     .enablePostCssLoader()
     .enableSourceMaps(!Encore.isProduction())
-    .enableVersioning(Encore.isProduction())
-    .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
-        config.corejs = 3;
-    });
+    .enableVersioning(Encore.isProduction());
+
+// Config Babel pour Heroku / ES Modules
+Encore.configureBabel((config) => {
+    config.presets.push([
+        '@babel/preset-env',
+        {
+            useBuiltIns: 'usage',
+            corejs: 3
+        }
+    ]);
+});
 
 module.exports = Encore.getWebpackConfig();
