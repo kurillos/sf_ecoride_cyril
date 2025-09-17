@@ -21,7 +21,8 @@
         "symfony/asset-mapper": "^7.0",
         "symfony/mailer": "^7.0",
         "symfony/notifier": "^7.3",
-        "doctrine/mongodb-odm-bundle": "^5.4"
+        "doctrine/mongodb-odm-bundle": "^5.4",
+        "vich/uploader-bundle": "^2.8"
     },
     "autoload": {
         "psr-4": {
@@ -34,4 +35,3 @@
         }
     }
 }
- 
