@@ -17,6 +17,7 @@
                     <h1 class="card-title text-center mb-4 text-success">Inscription</h1>
 
                     {{ form_start(userForm, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+                    {{ form_errors(userForm) }}
 
                        
                         <div class="mb-3">
