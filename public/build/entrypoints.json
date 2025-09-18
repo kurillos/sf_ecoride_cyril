@@ -3,9 +3,10 @@
     "app": {
       "js": [
         "/build/runtime.28e23fa3.js",
-        "/build/818.faf344ea.js",
+        "/build/995.caed4392.js",
+        "/build/818.992c8c3c.js",
         "/build/68.db5eaee7.js",
-        "/build/app.7ae2929e.js"
+        "/build/app.ab125c52.js"
       ],
       "css": [
         "/build/app.d9309bd8.css"
@@ -14,8 +15,16 @@
     "login_form": {
       "js": [
         "/build/runtime.28e23fa3.js",
-        "/build/818.faf344ea.js",
-        "/build/login_form.0bd73041.js"
+        "/build/995.caed4392.js",
+        "/build/818.992c8c3c.js",
+        "/build/login_form.9b13d213.js"
+      ]
+    },
+    "form_validation": {
+      "js": [
+        "/build/runtime.28e23fa3.js",
+        "/build/995.caed4392.js",
+        "/build/form_validation.98f9c795.js"
       ]
     },
     "main_styles": {
