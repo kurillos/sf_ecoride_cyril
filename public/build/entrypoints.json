@@ -2,12 +2,28 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.256ac61b.js",
-        "/build/837.b2cf0ee2.js",
-        "/build/app.44687231.js"
+        "/build/runtime.28e23fa3.js",
+        "/build/818.faf344ea.js",
+        "/build/68.db5eaee7.js",
+        "/build/app.7ae2929e.js"
       ],
       "css": [
         "/build/app.d9309bd8.css"
+      ]
+    },
+    "login_form": {
+      "js": [
+        "/build/runtime.28e23fa3.js",
+        "/build/818.faf344ea.js",
+        "/build/login_form.0bd73041.js"
+      ]
+    },
+    "main_styles": {
+      "js": [
+        "/build/runtime.28e23fa3.js"
+      ],
+      "css": [
+        "/build/main_styles.e41da278.css"
       ]
     }
   }

@@ -1,4 +1,13 @@
 {
-  "build/app.js": "/build/app.6d64f774.js",
-  "build/runtime.js": "/build/runtime.767a653e.js"
+  "build/app.css": "/build/app.d9309bd8.css",
+  "build/app.js": "/build/app.7ae2929e.js",
+  "build/login_form.js": "/build/login_form.0bd73041.js",
+  "build/main_styles.css": "/build/main_styles.e41da278.css",
+  "build/runtime.js": "/build/runtime.28e23fa3.js",
+  "build/436.42627222.js": "/build/436.42627222.js",
+  "build/818.faf344ea.js": "/build/818.faf344ea.js",
+  "build/665.0430ebcd.js": "/build/665.0430ebcd.js",
+  "build/68.db5eaee7.js": "/build/68.db5eaee7.js",
+  "build/fonts/bootstrap-icons.woff?": "/build/fonts/bootstrap-icons.1295669c.woff",
+  "build/fonts/bootstrap-icons.woff2?": "/build/fonts/bootstrap-icons.92ea18a8.woff2"
 }

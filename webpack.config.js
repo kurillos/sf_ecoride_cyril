@@ -5,6 +5,7 @@ Encore
     .setOutputPath('public/build/')
     .setPublicPath('/build')
     .addEntry('app', './assets/app.js')
+    .addEntry('login_form', './assets/js/login_form_validation.js')
     .addStyleEntry('main_styles', './assets/scss/custom_bootstrap.scss')
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
