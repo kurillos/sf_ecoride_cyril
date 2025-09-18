@@ -42,9 +42,13 @@ body {
     }
 }
 
+.navbar-custom .nav-link:hover {
+    color: $primary !important;
+}
+
 .footer {
     padding: 1rem 2rem;
-    background-color: $secondary;
+    background-color: #343a40;
     color: #fff;
     text-align: center;
     font-size: 0.9rem;

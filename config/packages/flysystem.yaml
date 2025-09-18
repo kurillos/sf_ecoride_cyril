@@ -1,0 +1,11 @@
+oneup_flysystem:
+    adapters:
+        profile_picture_adapter:
+            awss3v3:
+                client: Aws\S3\S3Client
+                bucket: '%env(AWS_S3_BUCKET)%'
+
+    filesystems:
+        profile_picture_fs:
+            adapter: profile_picture_adapter
+            visibility: public

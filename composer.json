@@ -22,7 +22,9 @@
         "symfony/mailer": "^7.0",
         "symfony/notifier": "^7.3",
         "doctrine/mongodb-odm-bundle": "^5.4",
-        "vich/uploader-bundle": "^2.8"
+        "vich/uploader-bundle": "^2.8",
+        "oneup/flysystem-bundle": "^4.12",
+        "league/flysystem-aws-s3-v3": "^3.29"
     },
     "autoload": {
         "psr-4": {
