@@ -57,6 +57,10 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
+        if ($form->isSubmitted() && !$form->isValid()) {
+            dump($form->getErrors(true));
+        }
+
         return $this->render('pages/signup.html.twig', [
             'userForm' => $form->createView(),
             'controller_name' => 'HomeController',
