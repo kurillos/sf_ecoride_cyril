@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Psr\Log\LoggerInterface;
 
 class HomeController extends AbstractController
 {
@@ -29,7 +30,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/signup', name: 'app_signup')]
-    public function signup(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function signup(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
     {
         $user = new User();
         $user->setCredits(20);
@@ -50,6 +51,8 @@ class HomeController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Votre compte a été créé avec succès !');
+
+            $logger->info('User created, redirecting to app_home');
 
             return $this->redirectToRoute('app_home');
         }
