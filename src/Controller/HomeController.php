@@ -57,8 +57,12 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
+        
+
         if ($form->isSubmitted() && !$form->isValid()) {
-            dump($form->getErrors(true));
+            foreach ($form->getErrors(true) as $error) {
+                $logger->error('Form Error: ' . $error->getMessage());
+            }
         }
 
         return $this->render('pages/signup.html.twig', [
